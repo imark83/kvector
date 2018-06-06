@@ -2,40 +2,6 @@
 
 
 
-void quickSort(std::vector<Data> &arr) {
-  quickSort(arr, 0, arr.size());
-}
-
-
-
-void quickSort(std::vector<Data> &arr, int left, int right) {
-  int i = left, j = right;
-  Data tmp;
-  Data pivot = arr[(left + right) / 2];
-
-  /* partition */
-  while(i <= j) {
-    while(arr[i].score < pivot.score)
-      ++i;
-    while(arr[j].score > pivot.score)
-      --j;
-    if(i <= j) {
-      tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-      ++i;
-      --j;
-    }
-  }
-  /* recursion */
-  if(left < j)
-    quickSort(arr, left, j);
-  if(i < right)
-    quickSort(arr, i, right);
-}
-
-
-
 
 void assignNavScores(std::vector<Data> &vec, int64_t nBox) {
   // vec[0].prev_boss[0] = -1;

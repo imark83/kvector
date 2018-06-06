@@ -2,11 +2,10 @@
 #define __MISC_HPP
 
 #include "data.hpp"
-typedef Data_t<double, 2> Data;
+typedef Data_t<2, double, int64_t> Data;
 
 
-void quickSort(std::vector<Data> &vec);
-void quickSort(std::vector<Data> &vec, int left, int right);
+
 void assignNavScores(std::vector<Data> &vec, int64_t nBox);
 int64_t getPositionOfScore(std::vector<Data> &vec, int64_t score);
 int64_t getPositionOfScore(std::vector<Data> &vec, int64_t score,
