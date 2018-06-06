@@ -2,7 +2,6 @@
 #define __MISC_HPP
 
 #include "data.hpp"
-typedef Data_t<2, double, int64_t> Data;
 
 
 
