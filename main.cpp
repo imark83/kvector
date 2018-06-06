@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include "data.hpp"
 #include "quicksort.hpp"
 #include "misc.hpp"
 
@@ -26,28 +27,21 @@
 
 
 int main(int argc, char const *argv[]) {
-  int64_t nBox = 200;
-  int64_t dataBaseSize = 10;
+  int64_t nBox = 10;
+  int64_t dataBaseSize = (1<<26);
 
-  std::vector<Data> vec(dataBaseSize);
+  std::vector<Data_t<2,double,int64_t> > vec(dataBaseSize);
 
   for(int i=0; i<vec.size(); ++i) {
     double x = ((double) rand()) / RAND_MAX;
     double y = ((double) rand()) / RAND_MAX;
     vec[i].x[0] = x;
     vec[i].x[1] = y;
-    // vec[i].score = (1<<30);
-    // vec[i].score*= (1<<30);
-    // vec[i].score*= (1<<30);
-    // vec[i].score*= (1<<30);
-    vec[i].score += (int64_t) floor(x*nBox) + nBox*floor(y*nBox);
+    vec[i].score = (int64_t) floor(x*nBox) + nBox*floor(y*nBox);
   }
 
   quickSort(vec);
   // assignNavScores(vec, nBox);
-
-  for(int i=0; i<vec.size(); ++i)
-    std::cout << " " << vec[i].score << std::endl;
 
 
 

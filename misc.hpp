@@ -3,6 +3,7 @@
 
 #include "data.hpp"
 
+typedef Data_t<2,double,int64_t> Data;
 
 
 void assignNavScores(std::vector<Data> &vec, int64_t nBox);
