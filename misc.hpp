@@ -9,7 +9,7 @@ template<int N, class T, class S>
 void assignNavScores(std::vector<Data_t<N,T,S> > &vec, int64_t nBox)  {
   vec[0].prev_boss = -1;
   vec[0].this_boss = 0;
-  for(int64_t i=1; i<vec.size(); ++i){
+  for(int64_t i=1; i< (int64_t) vec.size(); ++i){
     if(vec[i].score == vec[i-1].score) {
       vec[i].prev_boss = vec[i-1].prev_boss;
       vec[i].this_boss = vec[i-1].this_boss;

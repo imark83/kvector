@@ -50,7 +50,7 @@ public:
     return vec[i];
   }
 
-  size_t size() const {
+  int64_t size() const {
     return vec.size();
   }
 
@@ -84,7 +84,7 @@ void computeElementsPerDimension(Database<N,T,S> &database) {
   S box0;
   S box1;
   int64_t pos0, pos1;
-  for(int dimension=0; dimension<N-1; ++dimension) {
+  for(int64_t dimension=0; dimension<N-1; ++dimension) {
     pos0 = 0;
     box0 = database[0].score - (database[0].score%boxStep);
     box1 = box0 + boxStep;
@@ -112,11 +112,8 @@ int main(int argc, char const *argv[]) {
 
   Database<3,double,int64_t> database(dataBaseSize);
 
-  for(int i=0; i<database.size(); ++i) {
-    double x = ((double) rand()) / RAND_MAX;
-    double y = ((double) rand()) / RAND_MAX;
-    double z = ((double) rand()) / RAND_MAX;
-    for(int j=0; j<3; ++j)
+  for(int64_t i=0; i<database.size(); ++i) {
+    for(int64_t j=0; j<3; ++j)
       database[i].x[j] = ((double) rand()) / RAND_MAX;
     database[i].score = getScore(database[i], nBox);
   }
@@ -125,7 +122,7 @@ int main(int argc, char const *argv[]) {
   database.setScores(nBox);
   computeElementsPerDimension(database);
 
-  for(int i=0; i<database.size(); ++i) {
+  for(int64_t i=0; i<database.size(); ++i) {
     std::cout << i << " -> " << database[i] << std::endl;
   }
 
