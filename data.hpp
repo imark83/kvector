@@ -11,17 +11,17 @@ public:
   std::vector<T> x;
   S score; // TO CONVERT TO LIBGMP BIG INT
   int64_t this_boss;
-  int64_t next_boss[N];
+  int64_t prev_boss;
+  int64_t next_boss;
 
-  Data_t() : x(N, T(0)), score(0) {
-    for(int64_t i=0; i<N; ++i) {
-      next_boss[i] = -1;
-    }
+
+  std::vector<int64_t> elements_per_dim;
+
+
+  Data_t() : x(N, T(0)), score(0), elements_per_dim(N-1) {
+    next_boss = this_boss = prev_boss = -1;
     this_boss = -1;
   }
-
-
-
   int nDim() const {
     return N;
   }
