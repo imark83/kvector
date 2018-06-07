@@ -24,7 +24,7 @@ obj/%.o: %.cpp
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 
-all:
+all: clean
 	make database
 	make database_debug
 

@@ -1,11 +1,12 @@
 #ifndef __QUICKSORT_HPP
 #define __QUICKSORT_HPP
+#include <stdint.h>
 #include <vector>
 
 
 template<class T>
-void quickSort(std::vector<T> &arr, int left, int right) {
-  int i = left, j = right;
+void quickSort(std::vector<T> &arr, int64_t left, int64_t right) {
+  int64_t i = left, j = right;
   T tmp;
   T pivot = arr[(left + right) / 2];
 

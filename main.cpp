@@ -3,6 +3,7 @@
 #include <cmath>
 #include "data.hpp"
 #include "quicksort.hpp"
+#include "mergesort.hpp"
 #include "misc.hpp"
 
 #include <gmpxx.h>
@@ -55,7 +56,7 @@ public:
   }
 
   void sort() {
-    quickSort(vec);
+    mergeSort(vec);
   }
 
   void setScores(int64_t nBox) {
