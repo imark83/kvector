@@ -22,7 +22,7 @@ void merge(std::vector<T> &vec, int64_t left, int64_t mid, int64_t right) {
   int64_t i = 0; // Initial index of first subarr
   int64_t j = 0; // Initial index of second subarr
   int64_t k = left; // Initial index of merged subarr
-  while (i < leftArr.size() && j < rightArr.size()) {
+  while (i < (int64_t) leftArr.size() && j < (int64_t) rightArr.size()) {
     if (leftArr[i] < rightArr[j]) {
       vec[k] = leftArr[i];
       ++i;

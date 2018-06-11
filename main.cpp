@@ -55,16 +55,17 @@ public:
     return vec.size();
   }
 
-  void sort() {
-    mergeSort(vec);
-  }
-
   void setScores(int64_t nBox) {
     assignNavScores(vec, nBox);
     this->nBox = nBox;
   }
 
 };
+
+template<int N, class T, class S>
+void mergesort(Database<N,T,S> &database) {
+  mergeSort(database.vec);
+}
 
 template<class S>
 S myPow(S base, int64_t exponent) {
@@ -119,7 +120,7 @@ int main(int argc, char const *argv[]) {
     database[i].score = getScore(database[i], nBox);
   }
 
-  database.sort();
+  mergesort(database);
   database.setScores(nBox);
   computeElementsPerDimension(database);
 
