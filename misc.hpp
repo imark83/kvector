@@ -31,7 +31,7 @@ void assignNavScores(std::vector<Data_t<N,T,S> > &vec, int64_t nBox)  {
 
 template<int N, class T, class S>
 int64_t getPositionOfScore(std::vector<Data_t<N,T,S> > &vec,
-        S score, int64_t minPos, int64_t maxPos) {
+        S &score, int64_t minPos, int64_t maxPos) {
   // CHECK LEFT
   if(vec[minPos].score>score) return minPos;
   if(vec[maxPos-1].score<score) return maxPos;
@@ -55,7 +55,7 @@ int64_t getPositionOfScore(std::vector<Data_t<N,T,S> > &vec,
 
 
 template<int N, class T, class S>
-int64_t getPositionOfScore(std::vector<Data_t<N,T,S> > &vec, S score) {
+int64_t getPositionOfScore(std::vector<Data_t<N,T,S> > &vec, S &score) {
   int64_t tosend = vec.size();
   return getPositionOfScore(vec, score, 0, tosend);
 }

@@ -25,6 +25,16 @@ public:
   int nDim() const {
     return N;
   }
+
+
+  T & operator[](int64_t i) {
+    return x[i];
+  }
+  T & operator[](int64_t i) const {
+    return x[i];
+  }
+
+
 };
 
 template<int N, class T, class S>
