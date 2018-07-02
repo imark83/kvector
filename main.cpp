@@ -11,6 +11,27 @@
 
 
 
+// RETURNS WHETHER THERE IS (NEXT BOX DIMENSION) NEXT BOX OR NOT (-1)
+int next(std::vector<int64_t> &box, const std::vector<int64_t> &box0,
+        const std::vector<int64_t> &box1, int i) {
+  box[i] += 1;
+  if(box[i] == box1[i]) {
+    if(i==(int64_t) box.size()-1) return -1;
+    box[i] = box0[i];
+    return next(box, box0, box1, i+1);
+  }
+  return i;
+}
+
+// RETURNS WHETHER THERE IS NEXT BOX
+int next(std::vector<int64_t> &box, const std::vector<int64_t> &box0,
+  const std::vector<int64_t> &box1) {
+    return next(box, box0, box1, 0);
+  }
+
+
+
+
 // void printRange(std::vector<Data> &vec, size_t N,
 //           size_t first_score, size_t last_score) {
 //   size_t position = getPositionOfTag(vector, N, first_score);
@@ -149,7 +170,7 @@ void computeElementsPerDimension(Database<N,T> &database) {
 }
 
 int main(int argc, char const *argv[]) {
-  int64_t nBox = 3;
+  int64_t nBox = 4;
   int64_t dataBaseSize = 20;
 
   std::cout.precision(2);
@@ -171,12 +192,23 @@ int main(int argc, char const *argv[]) {
   }
 
 
-  // SEARCH RANGE [0,0.7]x[0,0.7]x[0,0.7]
+  // SEARCH RANGE [0.25,0.75)x[0.25,0.75)x[0.25,0.75)
   // brute force
   std::vector<int64_t> v(0);
+
   for(int64_t i=0; i<database.size(); ++i) {
-    if(database[i][2] > 0.5) continue;
-    v.push_back(i);
+    bool valid = true;
+    for(int64_t j=0; j<3; ++j) {
+      if(database[i][j] >= 0.75) {
+        valid = false;
+        break;
+      }
+      if(database[i][j] < 0.25) {
+        valid = false;
+        break;
+      }
+    }
+    if(valid) v.push_back(i);
   }
 
 
@@ -189,16 +221,71 @@ int main(int argc, char const *argv[]) {
 
 
 
+  std::vector<int64_t> box0(3);
+  std::vector<int64_t> box1(3);
+  // INITIALIZE BOX SEARCH box0 <= val < box1
+  for(int i=0; i<3; ++i) {
+    box0[i] = 1;
+    box1[i] = 3;
+  }
 
 
-  // // KVECTOR
-  // int64_t score0[3];
-  // int64_t score1[3];
-  // int64_t pos0[3];
-  // int64_t pos1[3];
+  std::vector<int64_t> box = box0;
+  std::vector<int64_t> box_left(box0);
+  std::vector<int64_t> box_right(box0);
+    box_right[0] = box1[0];
+
+  std::vector<int64_t> pos_left(2, getPositionOfScore(database, box_left));
+  std::vector<int64_t> pos_right(2, getPositionOfScore(database, box_right));
+
+  int leap = 0;
+  do {
+    // CHECK IF EMPTY ROW
+    if(database[pos_left[0]].score > box_right) {
+      leap = next(box_left, box0, box1, 1);
+      if(leap != -1) ++box_right[leap];
+      continue;
+    }
+
+    // NON EMPTY ROW
+    for(int i=pos_left[0]; i<pos_right[0]; ++i)
+      v.push_back(i);
+
+    leap = next(box_left, box0, box1, 1);
+    if(leap != -1) {
+      ++box_right[leap];
+      for(int k=leap; k>=0; --k) {
+        pos_left[k] =
+            pos_left[leap] + database[pos_left[leap]].elements_per_dim[leap];
+        pos_right[k] =
+            pos_right[leap] + database[pos_right[leap]].elements_per_dim[leap];
+      }
+
+      // AJUSTAR LEFT Y RIGHT
+       while(database[database[pos_left[0]].prev_boss].score > box_left
+                           && database[pos_left[0]].this_boss != 0)
+                                     pos_left[0] = database[pos_left[0]].prev_boss;
+
+       while(database[database[pos_left[0]].this_boss].score < box_left)
+               pos_left[0] = database[pos_left[0]].next_boss;
+
+      while(database[database[pos_right[0]].prev_boss].score > box_right
+                    && database[pos_right[0]].this_boss != 0)
+                            pos_right[0] = database[pos_right[0]].prev_boss;
+
+       while(database[database[pos_right[0]].this_boss].score < box_right)
+               pos_right[0] = database[pos_right[0]].next_boss;
+
+
+    }
+  } while (leap != -1);
 
 
 
+  std::cout << "rop = ";
+  for(int64_t i=0; i<(int64_t) v.size(); ++i)
+    std::cout << v[i] << " ";
+  std::cout << std::endl;
 
 
 

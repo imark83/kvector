@@ -2,6 +2,23 @@
 #include <stdlib.h>
 #include <math.h>
 
+
+
+// RETURNS WHETHER THERE IS NEXT BOX
+bool next(std::vector<int64_t> &box, const std::vector<int64_t> &box0,
+        const std::vector<int64_t> &box1, int i) {
+  box[i] += 1;
+  if(box[i] == box1[i]) {
+    if(i==N-1) return 0;
+    box[i] = box0[i];
+    return next(box, box0, box1, i+1);
+  }
+  return 1;
+}
+
+
+
+
 typedef struct _data_t {
   double x[2];
   size_t score;
@@ -73,76 +90,76 @@ int main(int argc, char const *argv[]) {
 }
 
 
-
-
-void quickSort(data_t *arr, int left, int right) {
-  int i = left, j = right;
-  data_t tmp;
-  data_t pivot = arr[(left + right) / 2];
-
-  /* partition */
-  while(i <= j) {
-    while(arr[i].score < pivot.score)
-      ++i;
-    while(arr[j].score > pivot.score)
-      --j;
-    if(i <= j) {
-      tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-      ++i;
-      --j;
-    }
-  }
-  /* recursion */
-  if(left < j)
-    quickSort(arr, left, j);
-  if(i < right)
-    quickSort(arr, i, right);
-}
-
-
-void assignTag(data_t *vector, size_t N) {
-  long long int i, j;
-
-  vector[0].prev_score = -1;
-  vector[0].this_score = vector[0].score;
-  for(i=1; i<N; ++i){
-    if(vector[i].score != vector[i-1].score) {
-      vector[i].prev_score = vector[i-1].this_score;
-      vector[i].this_score = i;
-      for(j=i-1; j>=0 && vector[j].score == vector[i-1].score; --j)
-        vector[j].next_score = i;
-    } else {
-      vector[i].prev_score = vector[i-1].prev_score;
-      vector[i].this_score = vector[i-1].this_score;
-    }
-  }
-  for(j=N-1; j>=0 && vector[j].score == vector[N-1].score; --j)
-    vector[j].next_score = N;
-  return;
-}
-
-size_t getPositionOfTag(data_t *vector,
-        size_t N, size_t score) {
-
-  // CHECK LEFT
-  if(vector[0].score>score) return 0;
-  if(vector[N-1].score<score) return N;
-  size_t left = 0, right = N-1;
-  size_t mid = (left + right) / 2;
-  do {
-    if(vector[mid].score == score)
-      return vector[mid].this_score;
-
-    if(vector[mid].score>score)
-      right = mid;
-    else
-      left = mid;
-    mid = (left + right) / 2;
-  } while (left != mid);
-
-  if(vector[mid].score == score) return vector[mid].this_score;
-
-  return vector[right].this_score;
-}
+//
+//
+// void quickSort(data_t *arr, int left, int right) {
+//   int i = left, j = right;
+//   data_t tmp;
+//   data_t pivot = arr[(left + right) / 2];
+//
+//   /* partition */
+//   while(i <= j) {
+//     while(arr[i].score < pivot.score)
+//       ++i;
+//     while(arr[j].score > pivot.score)
+//       --j;
+//     if(i <= j) {
+//       tmp = arr[i];
+//       arr[i] = arr[j];
+//       arr[j] = tmp;
+//       ++i;
+//       --j;
+//     }
+//   }
+//   /* recursion */
+//   if(left < j)
+//     quickSort(arr, left, j);
+//   if(i < right)
+//     quickSort(arr, i, right);
+// }
+//
+//
+// void assignTag(data_t *vector, size_t N) {
+//   long long int i, j;
+//
+//   vector[0].prev_score = -1;
+//   vector[0].this_score = vector[0].score;
+//   for(i=1; i<N; ++i){
+//     if(vector[i].score != vector[i-1].score) {
+//       vector[i].prev_score = vector[i-1].this_score;
+//       vector[i].this_score = i;
+//       for(j=i-1; j>=0 && vector[j].score == vector[i-1].score; --j)
+//         vector[j].next_score = i;
+//     } else {
+//       vector[i].prev_score = vector[i-1].prev_score;
+//       vector[i].this_score = vector[i-1].this_score;
+//     }
+//   }
+//   for(j=N-1; j>=0 && vector[j].score == vector[N-1].score; --j)
+//     vector[j].next_score = N;
+//   return;
+// }
+//
+// size_t getPositionOfTag(data_t *vector,
+//         size_t N, size_t score) {
+//
+//   // CHECK LEFT
+//   if(vector[0].score>score) return 0;
+//   if(vector[N-1].score<score) return N;
+//   size_t left = 0, right = N-1;
+//   size_t mid = (left + right) / 2;
+//   do {
+//     if(vector[mid].score == score)
+//       return vector[mid].this_score;
+//
+//     if(vector[mid].score>score)
+//       right = mid;
+//     else
+//       left = mid;
+//     mid = (left + right) / 2;
+//   } while (left != mid);
+//
+//   if(vector[mid].score == score) return vector[mid].this_score;
+//
+//   return vector[right].this_score;
+// }
