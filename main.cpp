@@ -91,14 +91,14 @@ public:
     this->nBox = nBox;
   }
 
-  print() {
-    std::cout << setw(3);
+  void print() {
+    std::cout.width(3);
     std::vector<int64_t> box0(N, 0);
     std::vector<int64_t> box1(N, nBox);
     int leap = 0;
     int64_t prevN = 0;
-    for(auto box = box0; box<box1; leap=next(box, box0, box1)) {
-      int64_t n = getPositionOfScore(box);
+    for(std::vector<int64_t> box = box0; box<box1; leap=next(box, box0, box1)) {
+      int64_t n = getPositionOfScore(*this, box);
       std::cout << n - prevN;
       prevN = n;
     }
@@ -300,6 +300,8 @@ int main(int argc, char const *argv[]) {
     std::cout << v[i] << " ";
   std::cout << std::endl;
 
+
+  database.print();
 
 
   return 0;
