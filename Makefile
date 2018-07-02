@@ -13,7 +13,7 @@ DEBUGFLAGS = -O0 -g
 database: $(COMMON_OBJECTS)
 	$(CC) -o $@ $(COMMON_OBJECTS) $(LIBS)
 
-database_debug: $(DEBUG_COMMON_OBJECTS)
+debug: clean $(DEBUG_COMMON_OBJECTS)
 	$(CC) -o $@ $(DEBUG_COMMON_OBJECTS) $(LIBS)
 
 
@@ -26,9 +26,9 @@ obj/%.o: %.cpp
 
 all: clean
 	make database
-	make database_debug
+	make debug
 
 
 .PHONY: clean
 clean:
-	rm -f $(ALL_OBJECTS) database database_debug
+	rm -f $(ALL_OBJECTS) database debug
