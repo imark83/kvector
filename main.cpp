@@ -92,15 +92,23 @@ public:
   }
 
   void print() {
-    std::cout.width(3);
     std::vector<int64_t> box0(N, 0);
-    std::vector<int64_t> box1(N, nBox);
+    std::vector<int64_t> box1(N, nBox-1);
+    std::vector<int64_t> boxOut(N, nBox);
     int leap = 0;
     int64_t prevN = 0;
-    for(std::vector<int64_t> box = box0; box<box1; leap=next(box, box0, box1)) {
+    for(std::vector<int64_t> box = box0; box<=box1; leap=next(box, box0, boxOut)) {
+      for(int i=0; i<leap; ++i) std::cout << std::endl;
       int64_t n = getPositionOfScore(*this, box);
-      std::cout << n - prevN;
-      prevN = n;
+      std::cout.width(5);
+      std::cout.fill(' ');
+      if(n < size()) {
+        if(vec[n].score == box)
+          std::cout << vec[n].next_boss - n;
+        else
+          std::cout << 0;
+      } else
+        std::cout << 0;
     }
   }
 
@@ -183,7 +191,7 @@ void computeElementsPerDimension(Database<N,T> &database) {
 }
 
 int main(int argc, char const *argv[]) {
-  int64_t nBox = 4;
+  int64_t nBox = 3;
   int64_t dataBaseSize = 20;
 
   std::cout.precision(2);
@@ -232,6 +240,8 @@ int main(int argc, char const *argv[]) {
 
   v.clear();
 
+  database.print();
+  return 0;
 
 
   std::vector<int64_t> box0(3);
@@ -301,7 +311,6 @@ int main(int argc, char const *argv[]) {
   std::cout << std::endl;
 
 
-  database.print();
 
 
   return 0;
