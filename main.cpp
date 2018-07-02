@@ -91,6 +91,19 @@ public:
     this->nBox = nBox;
   }
 
+  print() {
+    std::cout << setw(3);
+    std::vector<int64_t> box0(N, 0);
+    std::vector<int64_t> box1(N, nBox);
+    int leap = 0;
+    int64_t prevN = 0;
+    for(auto box = box0; box<box1; leap=next(box, box0, box1)) {
+      int64_t n = getPositionOfScore(box);
+      std::cout << n - prevN;
+      prevN = n;
+    }
+  }
+
 };
 
 template<int N, class T>
