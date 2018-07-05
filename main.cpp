@@ -2,32 +2,13 @@
 #include <cstdlib>
 #include <cmath>
 #include "data.hpp"
-#include "quicksort.hpp"
-#include "mergesort.hpp"
+#include "database.hpp"
 #include "misc.hpp"
 
 #include <gmpxx.h>
 
 
 
-
-// RETURNS WHETHER THERE IS (NEXT BOX DIMENSION) NEXT BOX OR NOT (-1)
-int next(std::vector<int64_t> &box, const std::vector<int64_t> &box0,
-        const std::vector<int64_t> &box1, int i) {
-  box[i] += 1;
-  if(box[i] == box1[i]) {
-    if(i==(int64_t) box.size()-1) return -1;
-    box[i] = box0[i];
-    return next(box, box0, box1, i+1);
-  }
-  return i;
-}
-
-// RETURNS WHETHER THERE IS NEXT BOX
-int next(std::vector<int64_t> &box, const std::vector<int64_t> &box0,
-  const std::vector<int64_t> &box1) {
-    return next(box, box0, box1, 0);
-  }
 
 
 
@@ -56,68 +37,7 @@ std::ostream & operator<<(std::ostream &output,
   return output;
 }
 
-template<int N, class T>
-std::ostream & operator<<(std::ostream &output, const Data_t<N,T> &op) {
-  output << "(" << op.x[0] << " " << op.x[1] << " " << op.x[2] << ") " << op.score << " (" << op.prev_boss << ","
-        << op.this_boss << "," << op.next_boss << ") elements = (" << op.elements_per_dim[0] << "," << op.elements_per_dim[1] << ")";
-  return output;
-}
 
-
-template<int N, class T>
-class Database {
-public:
-  std::vector<Data_t<N,T> > vec;
-  int64_t nBox;
-
-  Database(int dataBaseSize) : vec(dataBaseSize) {
-    nBox = -1;
-  }
-
-
-  Data_t<N,T> & operator[](int64_t i) {
-    return vec[i];
-  }
-  Data_t<N,T> & operator[](int64_t i) const {
-    return vec[i];
-  }
-
-  int64_t size() const {
-    return vec.size();
-  }
-
-  void setScores(int64_t nBox) {
-    assignNavScores(vec, nBox);
-    this->nBox = nBox;
-  }
-
-  void print() {
-    std::vector<int64_t> box0(N, 0);
-    std::vector<int64_t> box1(N, nBox-1);
-    std::vector<int64_t> boxOut(N, nBox);
-    int leap = 0;
-    int64_t prevN = 0;
-    for(std::vector<int64_t> box = box0; box<=box1; leap=next(box, box0, boxOut)) {
-      for(int i=0; i<leap; ++i) std::cout << std::endl;
-      int64_t n = getPositionOfScore(*this, box);
-      std::cout.width(5);
-      std::cout.fill(' ');
-      if(n < size()) {
-        if(vec[n].score == box)
-          std::cout << vec[n].next_boss - n;
-        else
-          std::cout << 0;
-      } else
-        std::cout << 0;
-    }
-  }
-
-};
-
-template<int N, class T>
-void mergesort(Database<N,T> &database) {
-  mergeSort(database.vec);
-}
 
 
 template<int N, class T>
@@ -128,18 +48,8 @@ int64_t getPositionOfScore(Database<N,T> &database,
 
 
 
-template<class S>
-S myPow(S base, int64_t exponent) {
-  if(exponent == 0) return 1;
-  if(exponent == 1) return base;
-  S temp = myPow(base,exponent/2);
-  if(exponent%2 == 0) {
-    return temp * temp;
-  }
-  return temp * temp * base;
-}
 
-int64_t maxLeap(const std::vector<int64_t> &score0, const std::vector<int64_t> &score1) {
+int64_t maxLeap(const Score_t &score0, const Score_t &score1) {
   for(int64_t i=score0.size()-1; i>=0; --i) {
     if (score0[i] != score1[i])
       return i;
@@ -191,8 +101,8 @@ void computeElementsPerDimension(Database<N,T> &database) {
 }
 
 int main(int argc, char const *argv[]) {
-  int64_t nBox = 3;
-  int64_t dataBaseSize = 20;
+  int64_t nBox = 4;
+  int64_t dataBaseSize = 25;
 
   std::cout.precision(2);
 
@@ -241,7 +151,6 @@ int main(int argc, char const *argv[]) {
   v.clear();
 
   database.print();
-  return 0;
 
 
   std::vector<int64_t> box0(3);
@@ -266,7 +175,33 @@ int main(int argc, char const *argv[]) {
     // CHECK IF EMPTY ROW
     if(database[pos_left[0]].score > box_right) {
       leap = next(box_left, box0, box1, 1);
-      if(leap != -1) ++box_right[leap];
+      if(leap != -1) {
+        box_right = box_left;
+        box_right[0] = box1[0];
+      }
+
+      for(int k=leap; k>=0; --k) {
+        pos_left[k] =
+            pos_left[leap] + database[pos_left[leap-1]].elements_per_dim[leap];
+        pos_right[k] =
+            pos_right[leap] + database[pos_right[leap-1]].elements_per_dim[leap];
+      }
+
+      // AJUSTAR LEFT Y RIGHT
+       while(database[database[pos_left[0]].prev_boss].score > box_left
+                           && database[pos_left[0]].this_boss != 0)
+                                     pos_left[0] = database[pos_left[0]].prev_boss;
+
+       while(database[database[pos_left[0]].this_boss].score < box_left)
+               pos_left[0] = database[pos_left[0]].next_boss;
+
+      while(database[database[pos_right[0]].prev_boss].score > box_right
+                    && database[pos_right[0]].this_boss != 0)
+                            pos_right[0] = database[pos_right[0]].prev_boss;
+
+       while(database[database[pos_right[0]].this_boss].score < box_right)
+               pos_right[0] = database[pos_right[0]].next_boss;
+
       continue;
     }
 
@@ -276,12 +211,13 @@ int main(int argc, char const *argv[]) {
 
     leap = next(box_left, box0, box1, 1);
     if(leap != -1) {
-      ++box_right[leap];
+      box_right = box_left;
+      box_right[0] = box1[0];
       for(int k=leap; k>=0; --k) {
         pos_left[k] =
-            pos_left[leap] + database[pos_left[leap]].elements_per_dim[leap];
+            pos_left[leap] + database[pos_left[leap-1]].elements_per_dim[leap];
         pos_right[k] =
-            pos_right[leap] + database[pos_right[leap]].elements_per_dim[leap];
+            pos_right[leap] + database[pos_right[leap-1]].elements_per_dim[leap];
       }
 
       // AJUSTAR LEFT Y RIGHT

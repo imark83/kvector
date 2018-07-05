@@ -1,15 +1,19 @@
 #ifndef __DATA_HPP
 #define __DATA_HPP
 
-
+#include <iostream>
 #include <stdint.h>
 #include <vector>
+
+
+
+typedef std::vector<int64_t> Score_t;
 
 template<int N, class T = double>
 class Data_t {
 public:
   std::vector<T> x;
-  std::vector<int64_t> score;
+  Score_t score;
   int64_t this_boss;
   int64_t prev_boss;
   int64_t next_boss;
@@ -70,50 +74,19 @@ inline void swap(Data_t<N,T> &op1, Data_t<N,T> &op2) {
 
 
 
-inline bool operator==(const std::vector<int64_t> &op1,
-          const std::vector<int64_t> &op2) {
-  for(int i=op1.size()-1; i>=0; --i) {
-    if(op1[i] != op2[i])
-      return 0;
-  }
-  return 1;
+template<int N, class T>
+std::ostream & operator<<(std::ostream &output, const Data_t<N,T> &op) {
+  output << "(" << op.x[0] << " " << op.x[1] << " " << op.x[2] << ") " << op.score << " (" << op.prev_boss << ","
+        << op.this_boss << "," << op.next_boss << ") elements = (" << op.elements_per_dim[0] << "," << op.elements_per_dim[1] << ")";
+  return output;
 }
 
 
-inline bool operator>(const std::vector<int64_t> &op1,
-          const std::vector<int64_t> &op2) {
-  for(int i=op1.size()-1; i>=0; --i) {
-    if(op1[i] > op2[i])
-      return 1;
-    if(op1[i] < op2[i])
-      return 0;
-  }
-  return 0;
-}
+bool operator==(const Score_t &op1, const Score_t &op2);
+bool operator>(const Score_t &op1, const Score_t &op2);
+bool operator<(const Score_t &op1, const Score_t &op2);
+bool operator<=(const Score_t &op1, const Score_t &op2);
 
-
-inline bool operator<(const std::vector<int64_t> &op1,
-          const std::vector<int64_t> &op2) {
-  for(int i=op1.size()-1; i>=0; --i) {
-    if(op1[i] < op2[i])
-      return 1;
-    if(op1[i] > op2[i])
-      return 0;
-  }
-  return 0;
-}
-
-
-inline bool operator<=(const std::vector<int64_t> &op1,
-          const std::vector<int64_t> &op2) {
-  for(int i=op1.size()-1; i>=0; --i) {
-    if(op1[i] < op2[i])
-      return 1;
-    if(op1[i] > op2[i])
-      return 0;
-  }
-  return 1;
-}
 
 
 #endif

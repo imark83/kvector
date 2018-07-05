@@ -1,12 +1,12 @@
 CC = g++
 
-COMMON_OBJECTS = obj/main.o
-DEBUG_COMMON_OBJECTS = obj/debug/main.o
+COMMON_OBJECTS = obj/main.o obj/data.o
+DEBUG_COMMON_OBJECTS = obj/debug/main.o obj/debug/data.o
 
 ALL_OBJECTS = $(DEBUG_COMMON_OBJECTS) $(COMMON_OBJECTS)
 
 
-LIBS = -lgmpxx -lgmp
+# LIBS = -lgmpxx -lgmp
 CFLAGS = -O3 -Wall
 DEBUGFLAGS = -O0 -g
 
