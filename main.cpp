@@ -27,6 +27,20 @@
 // }
 
 
+Score_t operator+(const Score_t &op1, const Score_t &op2) {
+  Score_t rop(op1);
+  for(size_t i=0; i<op1.size(); ++i)
+    rop[i] += op2[i];
+  return rop;
+}
+Score_t operator-(const Score_t &op1, const Score_t &op2) {
+  Score_t rop(op1);
+  for(size_t i=0; i<op1.size(); ++i)
+    rop[i] -= op2[i];
+  return rop;
+}
+
+
 std::ostream & operator<<(std::ostream &output,
         const std::vector<int64_t> &op) {
   if(op.size() == 0) return output;
@@ -153,8 +167,8 @@ int main(int argc, char const *argv[]) {
   database.print();
 
 
-  std::vector<int64_t> box0(3);
-  std::vector<int64_t> box1(3);
+  Score_t box0(3);
+  Score_t box1(3);
   // INITIALIZE BOX SEARCH box0 <= val < box1
   for(int i=0; i<3; ++i) {
     box0[i] = 1;
@@ -162,81 +176,73 @@ int main(int argc, char const *argv[]) {
   }
 
 
-  std::vector<int64_t> box = box0;
-  std::vector<int64_t> box_left(box0);
-  std::vector<int64_t> box_right(box0);
+  Score_t box = box0;
+  Score_t box_left(box0);
+  Score_t box_right(box0);
     box_right[0] = box1[0];
 
-  std::vector<int64_t> pos_left(2, getPositionOfScore(database, box_left));
-  std::vector<int64_t> pos_right(2, getPositionOfScore(database, box_right));
+  // std::cout << "box0 = " << box0 << std::endl;
+  // std::cout << "box1 = " << box1 << std::endl;
 
-  int leap = 0;
+  int64_t pos_left = getPositionOfScore(database, box_left);
+  // int64_t pos_right = getPositionOfScore(database, box_right);
+
+  int leap = -1;
   do {
-    // CHECK IF EMPTY ROW
-    if(database[pos_left[0]].score > box_right) {
-      leap = next(box_left, box0, box1, 1);
-      if(leap != -1) {
-        box_right = box_left;
-        box_right[0] = box1[0];
-      }
+    // std::cout << leap << " -> " << box_left << ", " << box_right << std::endl;
+    // std::cout << leap << " -> " << database[pos_left].score << std::endl;
 
-      for(int k=leap; k>=0; --k) {
-        pos_left[k] =
-            pos_left[leap] + database[pos_left[leap-1]].elements_per_dim[leap];
-        pos_right[k] =
-            pos_right[leap] + database[pos_right[leap-1]].elements_per_dim[leap];
-      }
-
-      // AJUSTAR LEFT Y RIGHT
-       while(database[database[pos_left[0]].prev_boss].score > box_left
-                           && database[pos_left[0]].this_boss != 0)
-                                     pos_left[0] = database[pos_left[0]].prev_boss;
-
-       while(database[database[pos_left[0]].this_boss].score < box_left)
-               pos_left[0] = database[pos_left[0]].next_boss;
-
-      while(database[database[pos_right[0]].prev_boss].score > box_right
-                    && database[pos_right[0]].this_boss != 0)
-                            pos_right[0] = database[pos_right[0]].prev_boss;
-
-       while(database[database[pos_right[0]].this_boss].score < box_right)
-               pos_right[0] = database[pos_right[0]].next_boss;
-
-      continue;
+    // CAJA CON PUNTOS
+    if(database[pos_left].score <= box_right) {
+      int64_t pos = pos_left;
+      while (database[pos].score < box_right)
+      v.push_back(pos++);
     }
 
-    // NON EMPTY ROW
-    for(int i=pos_left[0]; i<pos_right[0]; ++i)
-      v.push_back(i);
+
 
     leap = next(box_left, box0, box1, 1);
     if(leap != -1) {
-      box_right = box_left;
-      box_right[0] = box1[0];
-      for(int k=leap; k>=0; --k) {
-        pos_left[k] =
-            pos_left[leap] + database[pos_left[leap-1]].elements_per_dim[leap];
-        pos_right[k] =
-            pos_right[leap] + database[pos_right[leap-1]].elements_per_dim[leap];
+      box_right = box_left; box_right[0] = box1[0];
+
+      Score_t diff = box_left - database[pos_left].score;
+      std::cout << "\tnext left = " << box_left << std::endl;
+      std::cout << "\tdiff = " << diff << std::endl;
+      for(int64_t dim = 1; dim<(int64_t) diff.size(); ++dim) {
+        while(diff[dim]>0) {
+          pos_left += database[pos_left].elements_per_dim[dim-1];
+          if(pos_left >= database.size()) {
+            pos_left = database.size()-1;
+            break;
+          }
+          --diff[dim];
+        }
+        while(diff[dim]<0) {
+          pos_left -= database[pos_left].elements_per_dim[dim-1];
+          if(pos_left < 0) {
+            pos_left = 0;
+            break;
+          }
+          ++diff[dim];
+        }
       }
-
       // AJUSTAR LEFT Y RIGHT
-       while(database[database[pos_left[0]].prev_boss].score > box_left
-                           && database[pos_left[0]].this_boss != 0)
-                                     pos_left[0] = database[pos_left[0]].prev_boss;
+       while(database[database[pos_left].prev_boss].score > box_left
+                           && database[pos_left].this_boss != 0)
+                                     pos_left = database[pos_left].prev_boss;
 
-       while(database[database[pos_left[0]].this_boss].score < box_left)
-               pos_left[0] = database[pos_left[0]].next_boss;
-
-      while(database[database[pos_right[0]].prev_boss].score > box_right
-                    && database[pos_right[0]].this_boss != 0)
-                            pos_right[0] = database[pos_right[0]].prev_boss;
-
-       while(database[database[pos_right[0]].this_boss].score < box_right)
-               pos_right[0] = database[pos_right[0]].next_boss;
-
+       while(database[database[pos_left].this_boss].score < box_left)
+               pos_left = database[pos_left].next_boss;
+      //
+      // while(database[database[pos_right].prev_boss].score > box_right
+      //               && database[pos_right].this_boss != 0)
+      //                       pos_right = database[pos_right].prev_boss;
+      //
+      //  while(database[database[pos_right].this_boss].score < box_right)
+      //          pos_right = database[pos_right].next_boss;
 
     }
+
   } while (leap != -1);
 
 

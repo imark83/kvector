@@ -86,6 +86,7 @@ bool operator==(const Score_t &op1, const Score_t &op2);
 bool operator>(const Score_t &op1, const Score_t &op2);
 bool operator<(const Score_t &op1, const Score_t &op2);
 bool operator<=(const Score_t &op1, const Score_t &op2);
+bool operator>=(const Score_t &op1, const Score_t &op2);
 
 
 
