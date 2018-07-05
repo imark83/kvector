@@ -116,7 +116,7 @@ void computeElementsPerDimension(Database<N,T> &database) {
 
 int main(int argc, char const *argv[]) {
   int64_t nBox = 4;
-  int64_t dataBaseSize = 25;
+  int64_t dataBaseSize = 250;
 
   std::cout.precision(2);
 
@@ -164,7 +164,7 @@ int main(int argc, char const *argv[]) {
 
   v.clear();
 
-  database.print();
+  // database.print();
 
 
   Score_t box0(3);
@@ -225,6 +225,7 @@ int main(int argc, char const *argv[]) {
           }
           ++diff[dim];
         }
+        pos_left = database[pos_left].this_boss;
       }
       // AJUSTAR LEFT Y RIGHT
        while(database[database[pos_left].prev_boss].score > box_left
