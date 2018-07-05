@@ -206,8 +206,8 @@ int main(int argc, char const *argv[]) {
       box_right = box_left; box_right[0] = box1[0];
 
       Score_t diff = box_left - database[pos_left].score;
-      std::cout << "\tnext left = " << box_left << std::endl;
-      std::cout << "\tdiff = " << diff << std::endl;
+      // std::cout << "\tnext left = " << box_left << std::endl;
+      // std::cout << "\tdiff = " << diff << std::endl;
       for(int64_t dim = 1; dim<(int64_t) diff.size(); ++dim) {
         while(diff[dim]>0) {
           pos_left += database[pos_left].elements_per_dim[dim-1];
