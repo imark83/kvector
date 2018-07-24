@@ -8,21 +8,23 @@
 
 
 
-template<int N, class T>
+template<class T>
 class Database {
 public:
-  std::vector<Data_t<N,T> > vec;
+  std::vector<Data_t<T> > vec;
+  int64_t ndim;
   int64_t nBox;
 
-  Database(int dataBaseSize) : vec(dataBaseSize) {
+  Database(int64_t dataBaseSize, int64_t ndim) : vec(dataBaseSize,
+        Data_t<T>(ndim)), ndim(ndim) {
     nBox = -1;
   }
 
 
-  Data_t<N,T> & operator[](int64_t i) {
+  Data_t<T> & operator[](int64_t i) {
     return vec[i];
   }
-  Data_t<N,T> & operator[](int64_t i) const {
+  Data_t<T> & operator[](int64_t i) const {
     return vec[i];
   }
 
@@ -36,9 +38,9 @@ public:
   }
 
   void print() {
-    std::vector<int64_t> box0(N, 0);
-    std::vector<int64_t> box1(N, nBox-1);
-    std::vector<int64_t> boxOut(N, nBox);
+    std::vector<int64_t> box0(ndim, 0);
+    std::vector<int64_t> box1(ndim, nBox-1);
+    std::vector<int64_t> boxOut(ndim, nBox);
     int leap = 0;
     int64_t prevN = 0;
     for(std::vector<int64_t> box = box0; box<=box1; leap=next(box, box0, boxOut)) {
@@ -61,20 +63,20 @@ public:
 
 
 
-template<int N, class T>
-void mergesort(Database<N,T> &database) {
+template<class T>
+void mergesort(Database<T> &database) {
   mergeSort(database.vec);
 }
 
-template<int N, class T>
-void quicksort(Database<N,T> &database) {
+template<class T>
+void quicksort(Database<T> &database) {
   quickSort(database.vec);
 }
 
 
 
-template<int N, class T>
-int64_t getPositionOfScore(Database<N,T> &database,
+template<class T>
+int64_t getPositionOfScore(Database<T> &database,
           std::vector<int64_t> &score) {
   return getPositionOfScore(database.vec, score);
 }
@@ -82,10 +84,11 @@ int64_t getPositionOfScore(Database<N,T> &database,
 
 
 
-template<int N, class T>
-void computeElementsPerDimension(Database<N,T> &database) {
-  int ml;
-  int p;
+template<class T>
+void computeElementsPerDimension(Database<T> &database) {
+  int64_t N = database.ndim;
+  int64_t ml;
+  int64_t p;
   std::vector<int64_t> elements_per_dim(N-1, 0);
   for(int64_t pos=database[0].next_boss;
               pos<(int64_t) database.size(); pos = database[pos].next_boss) {
@@ -128,9 +131,9 @@ void computeElementsPerDimension(Database<N,T> &database) {
 
 
 
-template<int N, class T>
-void rangeSearch(std::vector<int64_t> &v, Database<N,T> &database,
-            Score_t box0, Score_t box1) {
+template<class T>
+void rangeSearch(std::vector<int64_t> &v, Database<T> &database,
+            Score_t &box0, Score_t &box1) {
 
 
   Score_t box = box0;

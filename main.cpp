@@ -38,13 +38,13 @@ int main(int argc, char const *argv[]) {
   clock_t c0, c1;
 
 
-  int ndim = 20;
+  int64_t ndim = 10;
   int64_t nBox = 4;
-  int64_t dataBaseSize = 10000000;
+  int64_t dataBaseSize = 2000000;
 
   std::cout.precision(2);
 
-  Database<20,double> database(dataBaseSize);
+  Database<double> database(dataBaseSize, ndim);
 
   for(int64_t i=0; i<database.size(); ++i) {
     for(int64_t j=0; j<ndim; ++j)
@@ -57,13 +57,13 @@ int main(int argc, char const *argv[]) {
   database.setScores(nBox);
   computeElementsPerDimension(database);
 
-  std::cout << "done. Start brute force..." << std::endl;
 
 
   // for(int64_t i=0; i<database.size(); ++i) {
   //   std::cout << i << " -> " << database[i] << std::endl;
   // }
 
+  std::cout << "done. Start brute force..." << std::endl;
 
   // SEARCH RANGE [0.25,0.75)x[0.25,0.75)x[0.25,0.75)
   // brute force
@@ -87,6 +87,7 @@ int main(int argc, char const *argv[]) {
   c1 = clock();
 
   std::cout << "rop = " << v.size() << std::endl;
+  std::cout << std::scientific;
   std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
   std::cout << "start k-pollas" << std::endl;
 
@@ -113,6 +114,7 @@ int main(int argc, char const *argv[]) {
 
 
   std::cout << "rop = " << v.size() << std::endl;
+  std::cout << std::scientific;
   std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
 

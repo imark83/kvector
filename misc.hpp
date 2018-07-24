@@ -5,8 +5,8 @@
 
 // typedef Data_t<2,double,int64_t> Data;
 
-template<int N, class T>
-void assignNavScores(std::vector<Data_t<N,T> > &vec, int64_t nBox)  {
+template<class T>
+void assignNavScores(std::vector<Data_t<T> > &vec, int64_t nBox)  {
   vec[0].prev_boss = -1;
   vec[0].this_boss = 0;
   for(int64_t i=1; i< (int64_t) vec.size(); ++i){
@@ -29,8 +29,8 @@ void assignNavScores(std::vector<Data_t<N,T> > &vec, int64_t nBox)  {
 
 
 
-template<int N, class T>
-int64_t getPositionOfScore(std::vector<Data_t<N,T> > &vec,
+template<class T>
+int64_t getPositionOfScore(std::vector<Data_t<T> > &vec,
         std::vector<int64_t> &score, int64_t minPos, int64_t maxPos) {
   // CHECK LEFT
   if(vec[minPos].score>score) return minPos;
@@ -54,18 +54,18 @@ int64_t getPositionOfScore(std::vector<Data_t<N,T> > &vec,
 }
 
 
-template<int N, class T>
-int64_t getPositionOfScore(std::vector<Data_t<N,T> > &vec,
+template<class T>
+int64_t getPositionOfScore(std::vector<Data_t<T> > &vec,
             std::vector<int64_t> &score) {
   return getPositionOfScore(vec, score, 0, vec.size());
 }
 
 
-template<int N, class T>
-std::vector<int64_t> getScore(Data_t<N,T> &data, int64_t nBox) {
+template<class T>
+std::vector<int64_t> getScore(Data_t<T> &data, int64_t nBox) {
   std::vector<T> &x = data.x;
-  std::vector<int64_t> score(N);
-  for(int64_t i=0; i<N; ++i)
+  std::vector<int64_t> score(data.ndim);
+  for(int64_t i=0; i<data.ndim; ++i)
     score[i] = floor(x[i]*nBox);
   return score;
 }
