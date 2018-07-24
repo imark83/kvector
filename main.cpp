@@ -193,7 +193,7 @@ int main(int argc, char const *argv[]) {
     // std::cout << leap << " -> " << database[pos_left].score << std::endl;
 
     // CAJA CON PUNTOS
-    if(database[pos_left].score <= box_right) {
+    if(database[pos_left].score < box_right) {
       int64_t pos = pos_left;
       while (database[pos].score < box_right)
       v.push_back(pos++);

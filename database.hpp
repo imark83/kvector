@@ -10,7 +10,7 @@
 
 // RETURNS WHETHER THERE IS (NEXT BOX DIMENSION) NEXT BOX OR NOT (-1)
 int next(Score_t &box, const Score_t &box0,
-        const Score_t &box1, int i) {
+        const Score_t &box1, const int i) {
   box[i] += 1;
   if(box[i] == box1[i]) {
     if(i==(int64_t) box.size()-1) return -1;
