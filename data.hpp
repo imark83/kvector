@@ -87,7 +87,17 @@ bool operator>(const Score_t &op1, const Score_t &op2);
 bool operator<(const Score_t &op1, const Score_t &op2);
 bool operator<=(const Score_t &op1, const Score_t &op2);
 bool operator>=(const Score_t &op1, const Score_t &op2);
+Score_t operator+(const Score_t &op1, const Score_t &op2);
+Score_t operator-(const Score_t &op1, const Score_t &op2);
 
+// TIMER
+// RETURNS WHETHER THERE IS (NEXT BOX DIMENSION) NEXT BOX OR NOT (-1)
+int next(Score_t &box, const Score_t &box0,
+        const Score_t &box1, const int i);
+// RETURNS WHETHER THERE IS NEXT BOX
+int next(Score_t &box, const Score_t &box0,
+  const Score_t &box1);
 
+int64_t maxLeap(const Score_t &score0, const Score_t &score1);
 
 #endif
