@@ -38,13 +38,13 @@ int main(int argc, char const *argv[]) {
   clock_t c0, c1;
 
 
-  int ndim = 15;
+  int ndim = 20;
   int64_t nBox = 4;
-  int64_t dataBaseSize = 250000;
+  int64_t dataBaseSize = 10000000;
 
   std::cout.precision(2);
 
-  Database<15,double> database(dataBaseSize);
+  Database<20,double> database(dataBaseSize);
 
   for(int64_t i=0; i<database.size(); ++i) {
     for(int64_t j=0; j<ndim; ++j)
@@ -52,9 +52,13 @@ int main(int argc, char const *argv[]) {
     database[i].score = getScore(database[i], nBox);
   }
 
+  std::cout << "start preprocessing..." << std::endl;
   mergesort(database);
   database.setScores(nBox);
   computeElementsPerDimension(database);
+
+  std::cout << "done. Start brute force..." << std::endl;
+
 
   // for(int64_t i=0; i<database.size(); ++i) {
   //   std::cout << i << " -> " << database[i] << std::endl;
@@ -84,6 +88,8 @@ int main(int argc, char const *argv[]) {
 
   std::cout << "rop = " << v.size() << std::endl;
   std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
+  std::cout << "start k-pollas" << std::endl;
+
 
 
   v.clear();
@@ -100,12 +106,14 @@ int main(int argc, char const *argv[]) {
     box1[i] = 3;
   }
 
+  c0 = clock();
   rangeSearch(v, database, box0, box1);
-
+  c1 = clock();
 
 
 
   std::cout << "rop = " << v.size() << std::endl;
+  std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
 
 
