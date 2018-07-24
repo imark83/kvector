@@ -33,15 +33,16 @@ std::ostream & operator<<(std::ostream &output,
 
 
 int main(int argc, char const *argv[]) {
+  int ndim = 15;
   int64_t nBox = 4;
-  int64_t dataBaseSize = 250;
+  int64_t dataBaseSize = 250000;
 
   std::cout.precision(2);
 
-  Database<3,double> database(dataBaseSize);
+  Database<15,double> database(dataBaseSize);
 
   for(int64_t i=0; i<database.size(); ++i) {
-    for(int64_t j=0; j<3; ++j)
+    for(int64_t j=0; j<ndim; ++j)
       database[i].x[j] = ((double) rand()) / RAND_MAX;
     database[i].score = getScore(database[i], nBox);
   }
@@ -50,9 +51,9 @@ int main(int argc, char const *argv[]) {
   database.setScores(nBox);
   computeElementsPerDimension(database);
 
-  for(int64_t i=0; i<database.size(); ++i) {
-    std::cout << i << " -> " << database[i] << std::endl;
-  }
+  // for(int64_t i=0; i<database.size(); ++i) {
+  //   std::cout << i << " -> " << database[i] << std::endl;
+  // }
 
 
   // SEARCH RANGE [0.25,0.75)x[0.25,0.75)x[0.25,0.75)
@@ -61,7 +62,7 @@ int main(int argc, char const *argv[]) {
 
   for(int64_t i=0; i<database.size(); ++i) {
     bool valid = true;
-    for(int64_t j=0; j<3; ++j) {
+    for(int64_t j=0; j<ndim; ++j) {
       if(database[i][j] >= 0.75) {
         valid = false;
         break;
@@ -75,10 +76,8 @@ int main(int argc, char const *argv[]) {
   }
 
 
-  std::cout << "rop = ";
-  for(int64_t i=0; i<(int64_t) v.size(); ++i)
-    std::cout << v[i] << " ";
-  std::cout << std::endl;
+  std::cout << "rop = " << v.size() << std::endl;
+
 
   v.clear();
 
@@ -86,10 +85,10 @@ int main(int argc, char const *argv[]) {
 
 
 
-  Score_t box0(3);
-  Score_t box1(3);
+  Score_t box0(ndim);
+  Score_t box1(ndim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
-  for(int i=0; i<3; ++i) {
+  for(int i=0; i<ndim; ++i) {
     box0[i] = 1;
     box1[i] = 3;
   }
@@ -99,10 +98,7 @@ int main(int argc, char const *argv[]) {
 
 
 
-  std::cout << "rop = ";
-  for(int64_t i=0; i<(int64_t) v.size(); ++i)
-    std::cout << v[i] << " ";
-  std::cout << std::endl;
+  std::cout << "rop = " << v.size() << std::endl;
 
 
 
