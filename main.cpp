@@ -33,6 +33,11 @@ std::ostream & operator<<(std::ostream &output,
 
 
 int main(int argc, char const *argv[]) {
+
+  // MEASURE TIME
+  clock_t c0, c1;
+
+
   int ndim = 15;
   int64_t nBox = 4;
   int64_t dataBaseSize = 250000;
@@ -60,6 +65,7 @@ int main(int argc, char const *argv[]) {
   // brute force
   std::vector<int64_t> v(0);
 
+  c0 = clock();
   for(int64_t i=0; i<database.size(); ++i) {
     bool valid = true;
     for(int64_t j=0; j<ndim; ++j) {
@@ -74,9 +80,10 @@ int main(int argc, char const *argv[]) {
     }
     if(valid) v.push_back(i);
   }
-
+  c1 = clock();
 
   std::cout << "rop = " << v.size() << std::endl;
+  std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
 
   v.clear();
