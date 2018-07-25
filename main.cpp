@@ -39,8 +39,8 @@ int main(int argc, char const *argv[]) {
 
 
   int64_t ndim = 10;
-  int64_t nBox = 4;
-  int64_t dataBaseSize = 2000000;
+  int64_t nBox = 5;
+  int64_t dataBaseSize = 10000000;
 
   std::cout.precision(2);
 
@@ -73,11 +73,11 @@ int main(int argc, char const *argv[]) {
   for(int64_t i=0; i<database.size(); ++i) {
     bool valid = true;
     for(int64_t j=0; j<ndim; ++j) {
-      if(database[i][j] >= 0.75) {
+      if(database[i][j] >= 0.8) {
         valid = false;
         break;
       }
-      if(database[i][j] < 0.25) {
+      if(database[i][j] < 0.6) {
         valid = false;
         break;
       }
@@ -93,6 +93,7 @@ int main(int argc, char const *argv[]) {
 
 
 
+  // std::cout << v << std::endl;
   v.clear();
 
   // database.print();
@@ -103,14 +104,15 @@ int main(int argc, char const *argv[]) {
   Score_t box1(ndim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
   for(int i=0; i<ndim; ++i) {
-    box0[i] = 1;
-    box1[i] = 3;
+    box0[i] = 3;
+    box1[i] = 4;
   }
 
   c0 = clock();
   rangeSearch(v, database, box0, box1);
   c1 = clock();
 
+  // std::cout << v << std::endl;
 
 
   std::cout << "rop = " << v.size() << std::endl;

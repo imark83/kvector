@@ -188,7 +188,7 @@ void rangeSearch(std::vector<int64_t> &v, Database<T> &database,
         pos_left = database[pos_left].this_boss;
       }
       // AJUSTAR LEFT Y RIGHT
-       while(database[database[pos_left].prev_boss].score > box_left
+       while(database[database[pos_left].prev_boss].score >= box_left
                            && database[pos_left].this_boss != 0)
                                      pos_left = database[pos_left].prev_boss;
 
