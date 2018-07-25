@@ -64,8 +64,8 @@ int64_t getPositionOfScore(std::vector<Data_t<T> > &vec,
 template<class T>
 std::vector<int64_t> getScore(Data_t<T> &data, int64_t nBox) {
   std::vector<T> &x = data.x;
-  std::vector<int64_t> score(data.ndim);
-  for(int64_t i=0; i<data.ndim; ++i)
+  std::vector<int64_t> score(data.subdim);
+  for(int64_t i=0; i<data.subdim; ++i)
     score[i] = floor(x[i]*nBox);
   return score;
 }

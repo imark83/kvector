@@ -14,11 +14,11 @@ public:
   std::vector<Data_t<T> > vec;
   int64_t ndim;
   int64_t nBox;
+  int64_t subdim;
 
-  Database(int64_t dataBaseSize, int64_t ndim) : vec(dataBaseSize,
-        Data_t<T>(ndim)), ndim(ndim) {
-    nBox = -1;
-  }
+  Database(int64_t dataBaseSize, int64_t ndim, int64_t nBox, int64_t subdim)
+        : vec(dataBaseSize, Data_t<T>(ndim, subdim)),
+        ndim(ndim), nBox(nBox), subdim(subdim) {}
 
 
   Data_t<T> & operator[](int64_t i) {
@@ -32,7 +32,7 @@ public:
     return vec.size();
   }
 
-  void setScores(int64_t nBox) {
+  void setScores() {
     assignNavScores(vec, nBox);
     this->nBox = nBox;
   }

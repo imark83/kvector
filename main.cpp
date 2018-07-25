@@ -21,6 +21,10 @@
 
 
 
+double minval = 0.3;
+double maxval = 0.7;
+
+
 std::ostream & operator<<(std::ostream &output,
         const std::vector<int64_t> &op) {
   if(op.size() == 0) return output;
@@ -38,13 +42,14 @@ int main(int argc, char const *argv[]) {
   clock_t c0, c1;
 
 
-  int64_t ndim = 10;
-  int64_t nBox = 5;
+  int64_t ndim = 11;
+  int64_t nBox = 10;
   int64_t dataBaseSize = 10000000;
+  int64_t subdim = 7;
 
   std::cout.precision(2);
 
-  Database<double> database(dataBaseSize, ndim);
+  Database<double> database(dataBaseSize, ndim, nBox, subdim);
 
   for(int64_t i=0; i<database.size(); ++i) {
     for(int64_t j=0; j<ndim; ++j)
@@ -54,7 +59,7 @@ int main(int argc, char const *argv[]) {
 
   std::cout << "start preprocessing..." << std::endl;
   mergesort(database);
-  database.setScores(nBox);
+  database.setScores();
   computeElementsPerDimension(database);
 
 
@@ -67,17 +72,17 @@ int main(int argc, char const *argv[]) {
 
   // SEARCH RANGE [0.25,0.75)x[0.25,0.75)x[0.25,0.75)
   // brute force
-  std::vector<int64_t> v(0);
+  std::vector<int64_t> v(0), temp(0);
 
   c0 = clock();
   for(int64_t i=0; i<database.size(); ++i) {
     bool valid = true;
     for(int64_t j=0; j<ndim; ++j) {
-      if(database[i][j] >= 0.8) {
+      if(database[i][j] >= maxval) {
         valid = false;
         break;
       }
-      if(database[i][j] < 0.6) {
+      if(database[i][j] < minval) {
         valid = false;
         break;
       }
@@ -100,16 +105,30 @@ int main(int argc, char const *argv[]) {
 
 
 
-  Score_t box0(ndim);
-  Score_t box1(ndim);
+  Score_t box0(subdim);
+  Score_t box1(subdim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
-  for(int i=0; i<ndim; ++i) {
+  for(int i=0; i<subdim; ++i) {
     box0[i] = 3;
-    box1[i] = 4;
+    box1[i] = 7;
   }
 
   c0 = clock();
-  rangeSearch(v, database, box0, box1);
+  rangeSearch(temp, database, box0, box1);
+  for(int64_t i=0; i<(int64_t) temp.size(); ++i) {
+    bool valid = true;
+    for(int64_t j=ndim-1; j>=0; --j) {
+      if(database[temp[i]][j] >= maxval) {
+        valid = false;
+        break;
+      }
+      if(database[temp[i]][j] < minval) {
+        valid = false;
+        break;
+      }
+    }
+    if(valid) v.push_back(temp[i]);
+  }
   c1 = clock();
 
   // std::cout << v << std::endl;

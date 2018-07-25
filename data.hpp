@@ -18,12 +18,14 @@ public:
   int64_t prev_boss;
   int64_t next_boss;
   int64_t ndim;
+  int64_t subdim;
 
   std::vector<int64_t> elements_per_dim;
 
 
 
-  Data_t(int64_t N) : x(N, T(0)), score(N,0), ndim(N), elements_per_dim(N-1,-1) {
+  Data_t(int64_t ndim, int64_t subdim) : x(ndim, T(0)), score(subdim, 0),
+        ndim(ndim), subdim(subdim), elements_per_dim(subdim-1, -1) {
     next_boss = this_boss = prev_boss = -1;
     this_boss = -1;
   }
@@ -44,7 +46,7 @@ public:
 
 template<class T>
 inline bool operator<(const Data_t<T> &op1, const Data_t<T> &op2) {
-  for(int i=op1.ndim-1; i>=0; --i) {
+  for(int i=op1.subdim-1; i>=0; --i) {
     if(op1.score[i] < op2.score[i])
       return 1;
     if(op1.score[i] > op2.score[i])
@@ -56,7 +58,7 @@ inline bool operator<(const Data_t<T> &op1, const Data_t<T> &op2) {
 
 template<class T>
 inline bool operator>(const Data_t<T> &op1, const Data_t<T> &op2) {
-  for(int i=op1.ndim-1; i>=0; --i) {
+  for(int i=op1.subdim-1; i>=0; --i) {
     if(op1.score[i] > op2.score[i])
       return 1;
     if(op1.score[i] < op2.score[i])
