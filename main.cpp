@@ -20,8 +20,9 @@
 // }
 
 
+int64_t movidas = 0;
 
-double minval = 0.3;
+double minval = 0.2;
 double maxval = 0.7;
 
 
@@ -42,10 +43,10 @@ int main(int argc, char const *argv[]) {
   clock_t c0, c1;
 
 
-  int64_t ndim = 11;
-  int64_t nBox = 10;
+  int64_t ndim = 10;
+  int64_t nBox = 100;
   int64_t dataBaseSize = 10000000;
-  int64_t subdim = 7;
+  int64_t subdim = 3;
 
   std::cout.precision(2);
 
@@ -109,8 +110,8 @@ int main(int argc, char const *argv[]) {
   Score_t box1(subdim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
   for(int i=0; i<subdim; ++i) {
-    box0[i] = 3;
-    box1[i] = 7;
+    box0[i] = 20;
+    box1[i] = 70;
   }
 
   c0 = clock();
@@ -138,7 +139,7 @@ int main(int argc, char const *argv[]) {
   std::cout << std::scientific;
   std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
-
+std::cout << "movidas = " << movidas << std::endl;
 
 
   return 0;

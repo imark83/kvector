@@ -6,6 +6,7 @@
 #include "quicksort.hpp"
 #include "mergesort.hpp"
 
+extern int64_t movidas;
 
 
 template<class T>
@@ -189,11 +190,11 @@ void rangeSearch(std::vector<int64_t> &v, Database<T> &database,
       }
       // AJUSTAR LEFT Y RIGHT
        while(database[database[pos_left].prev_boss].score >= box_left
-                           && database[pos_left].this_boss != 0)
-                                     pos_left = database[pos_left].prev_boss;
+                           && database[pos_left].this_boss != 0){++movidas;
+                                     pos_left = database[pos_left].prev_boss;}
 
-       while(database[database[pos_left].this_boss].score < box_left)
-               pos_left = database[pos_left].next_boss;
+       while(database[database[pos_left].this_boss].score < box_left){++movidas;
+               pos_left = database[pos_left].next_boss;}
       //
       // while(database[database[pos_right].prev_boss].score > box_right
       //               && database[pos_right].this_boss != 0)

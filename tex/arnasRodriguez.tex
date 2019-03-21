@@ -1,0 +1,326 @@
+%%
+%% Copyright 2007-2018 Elsevier Ltd
+%%
+%% This file is part of the 'Elsarticle Bundle'.
+%% ---------------------------------------------
+%%
+%% It may be distributed under the conditions of the LaTeX Project Public
+%% License, either version 1.2 of this license or (at your option) any
+%% later version.  The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.2 or later is part of all distributions of LaTeX
+%% version 1999/12/01 or later.
+%%
+%% The list of all files belonging to the 'Elsarticle Bundle' is
+%% given in the file `manifest.txt'.
+%%
+%% Template article for Elsevier's document class `elsarticle'
+%% with harvard style bibliographic references
+
+\documentclass[preprint,12pt]{elsarticle}
+
+%% Use the option review to obtain double line spacing
+%% \documentclass[preprint,review,12pt]{elsarticle}
+
+%% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
+%% for a journal layout:
+%% \documentclass[final,1p,times]{elsarticle}
+%% \documentclass[final,1p,times,twocolumn]{elsarticle}
+%% \documentclass[final,3p,times]{elsarticle}
+%% \documentclass[final,3p,times,twocolumn]{elsarticle}
+%% \documentclass[final,5p,times]{elsarticle}
+%% \documentclass[final,5p,times,twocolumn]{elsarticle}
+
+%% For including figures, graphicx.sty has been loaded in
+%% elsarticle.cls. If you prefer to use the old commands
+%% please give \usepackage{epsfig}
+
+%% The amssymb package provides various useful mathematical symbols
+\usepackage{amssymb, amsmath}
+%% The amsthm package provides extended theorem environments
+%% \usepackage{amsthm}
+
+%% The lineno packages adds line numbers. Start line numbering with
+%% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
+%% for the whole article with \linenumbers.
+%% \usepackage{lineno}
+
+
+\usepackage{tikz}
+\usetikzlibrary{shapes}
+
+\journal{Computer Physics Communications}
+
+\begin{document}
+
+\begin{frontmatter}
+
+%% Title, authors and addresses
+
+%% use the tnoteref command within \title for footnotes;
+%% use the tnotetext command for theassociated footnote;
+%% use the fnref command within \author or \address for footnotes;
+%% use the fntext command for theassociated footnote;
+%% use the corref command within \author for corresponding author footnotes;
+%% use the cortext command for theassociated footnote;
+%% use the ead command for the email address,
+%% and the form \ead[url] for the home page:
+%% \title{Title\tnoteref{label1}}
+%% \tnotetext[label1]{}
+%% \author{Name\corref{cor1}\fnref{label2}}
+%% \ead{email address}
+%% \ead[url]{home page}
+%% \fntext[label2]{}
+%% \cortext[cor1]{}
+%% \address{Address\fnref{label3}}
+%% \fntext[label3]{}
+
+\title{Range searching in high dimensional databases using navigation metadata}
+
+%% use optional labels to link authors explicitly to addresses:
+\author[label]{David Arnas}
+\author[label]{Marcos Rodr\'{\i}guez}
+\address[label]{Centro Universitario de la Defensa de Zaragoza. IUMA.}
+
+
+\begin{abstract}
+%% Text of abstract
+In this work we introduce a new range searching algorithm that can be applied to high dimensional databases. The proposed methodology is based on the idea of generating a navigation metadata structure complementary to the database that allows the easy navigation between the elements of the database. The proposed algorithm requires a one time preprocessing effort and can be adapted to different problems. This work contains a description of the algorithm as well as a study of the performance of the algorithm under different scenarios. Performance comparisons with other algorithms of the literature are also included. 
+\end{abstract}
+
+\begin{keyword}
+%% keywords here, in the form: keyword \sep keyword
+Computer Science \sep Range Searching Techniques \sep Multidimensional Spaces \sep Data Structures
+
+%% PACS codes here, in the form: \PACS code \sep code
+
+%% MSC codes here, in the form: \MSC code \sep code
+%% or \MSC[2008] code \sep code (2000 is the default)
+
+\end{keyword}
+
+\end{frontmatter}
+
+%% \linenumbers
+
+%% main text
+\section{Introduction}
+\label{sec:intro}
+
+
+\section{Cell Web Algorithm}
+\label{sec:algorithm}
+
+\subsection{General overview}
+\label{sec:idea}
+
+The algorithm proposed in this manuscript is based on the idea of first generating a data structure containing a set of navigation directions between the elements of the database and then, providing a simple and fast methodology to retrieve all the elements in the database contained in a given interval. This means that the algorithm requires to first generate a one time preprocessing effort of the database in which the algorithm sorts the database in a given sense and creates the metadata that allows the navigation between elements of the database. This preprocessing is done only once for each database, being the results of it stored. That way, the basis of the preprocessing can be summarized in the following steps:
+\begin{itemize}
+  \item Select a subset of dimensions in which a grid is defined.
+  \item Generate an ordering of the elements of the grid.
+  \item Sort the database according to the ordering defined in the grid.
+  \item Attach complementary metadata that allows a fast navigation over the subset of dimensions considered in the grid.
+\end{itemize}
+
+Once the preprocessing is done, it is then possible to perform the orthogonal search. In order to do that, the algorithm first transforms the orthogonal search into a search based on the grid previously defined in the preprocessing, where the algorithm has to assure that the original searching interval is included in the this equivalent search. That way, we can be sure that the process will retrieve at least all the elements inside the searching interval. Note that modifying the searching methodology in this way implies that the algorithm now focus on the identification of the cells that define the searching range, and the retrieval of the elements associated with those cells. In order to simplify notation, we refer to these cells associated with the searching range as search cells.
+
+Then, a binary search technique is used in order to find the first element inside the searching range. Based on the position of this first element, and using the navigation metadata generated during the preprocessing, the algorithm identifies the elements that are adjacent in memory and contained in the in the search cells. After that is done, and since the knowledge of the search cells is complete, the algorithm can search for the position of the first element in the next search cell using the navigation metadata stored in memory. Once this element is identified, the algorithm retrieves all the elements that are adjacent in memory and contained in the search cells.
+
+This searching process is continued until all the search cells have been studied. At this moment, and since it is not possible to obtain a perfect match between the original searching range and the search cells defined, a post-processing effort is performed in order to identify which of the elements retrieved are outside the searching range. It is important to note that for databases with a high dimensionality, the grid defined in the preprocessing will not cover all the possible dimensions. However, the algorithm is set in such a way that this is overcome by the post-processing, where the majority of the database will be discarded in the initial phase of the searching process.
+
+In order to make the process clearer, we have included the steps followed by the searching process in the following lines:
+\begin{itemize}
+  \item Transform the searching range into a search based on cells that are the best approximation of the searching range and fully contain it. These cells are defined by the grid generated during the preprocessing. Figure~\ref{Fig:basis} shows a random three-dimensional database that has been distributed in a $3\times3\times3$ grid. This means that each of the three grids presented in the figure correspond to the three different layers in which the third dimension is distributed. Moreover, Figure~\ref{Fig:basis} shows the search cells, which are represented by the gray areas in the database.
+  \item Find the first element of the searching range using a binary search technique applied to the grid generated in the preprocessing. This first element is represented in Figure~\ref{Fig:basis} with a star.
+  \item Retrieve all the database elements contained in the search cells that are adjacent in memory to this first element. The navigation between elements located in adjacent memory is performed using the navigation metadata and is represented in Figure~\ref{Fig:basis} by dashed lines.
+  \item Use the navigation metadata stored in memory to identify the location of the first element of the next searching cell to study. In Figure~\ref{Fig:basis} this navigation is represented by solid lines.
+  \item Retrieve all the elements that are adjacent in memory and contained in the search cells. Then, repeat the navigation process until all the search cells are retrieved. 
+  \item Perform a post-processing effort in order to assure that all the elements retrieved are in the original searching range. 
+\end{itemize}
+
+\begin{figure}[!h]
+\begin{center}
+\begin{tikzpicture}[x=2.5cm,y=2.5cm]
+  % \tikzset{pto/.style={circle, draw,inner sep = 0, outer sep = 0, minimum size=0.3mm}}
+  \tikzset{pto/.style={circle, draw, fill, inner sep = 0, outer sep = 0, minimum size=0.6mm}}
+  \foreach \k in {0,1} {
+    \begin{scope}[shift={(1.2*\k, 0)}]
+      \fill[gray!15!white] (0.3333,0) rectangle +(0.66666,0.66666);
+    \end{scope}
+  }
+  \foreach \k in {0,1,2} {
+    \begin{scope}[shift={(1.2*\k, 0)}]
+      \input{points\k.tex}
+      \foreach \j in {0,0.33333,0.6666666,1} {
+        \draw[thin] (0,\j) -- +(1,0);
+        \draw[thin] (\j,0) -- +(0,1);
+      }
+    \end{scope}
+  }
+  \draw[-to, dashed] (P3) edge (P8) (P8) edge (P7) (P7) edge (P9);
+  \draw[-to, dashed] (P1) edge (P0) (P0) edge (P2);
+  \draw[-to, dashed] (P23) edge (P24) (P24) edge (P25);
+  \draw[-to, dashed] (P18) edge (P20) (P20) edge (P21);
+  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P3) -- ++(-0.1,0) |- (P1);
+  \draw[rounded corners = 5pt, -to] (P3) -- ++(-0.1,0) |- (P1);
+  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P1) -- ++(0,-0.4) -| (P23);
+  \draw[rounded corners = 5pt, -to] (P1) -- ++(0,-0.4) -| (P23);
+  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P23) -- ++(-0.1,0) |- (P18);
+  \draw[rounded corners = 5pt, -to] (P23) -- ++(-0.1,0) |- (P18);
+
+  \node[draw,star,star points=5,star point ratio=1.8, minimum width = 3mm,inner sep = 0] at (P3) {};
+
+  \begin{scope}[shift={(3.5,0.8)}]
+    \node[right,draw,fill=gray!15!white,minimum width = 4mm] (D) {};
+      \node[right] at (D.east) {\scriptsize Cell searching range};
+    \node[right, draw,star,star points=5,star point ratio=1.8, minimum width = 3mm,inner sep = 0] at (0.015,-5mm) (A) {};
+      \node[right] at (A.east)  {\scriptsize First Output Point};
+    \node[right, minimum width=4mm] (B) at (0,-10mm) {};
+      \draw[-to, dashed] (B.west) -- (B.east) node [right,inner sep = 0.5mm] {\scriptsize {Adjacent memory navigation}};
+    \node[right, minimum width=4mm] (C) at (0,-15mm) {};
+      \draw[-to] (C.west) -- (C.east) node [right,inner sep = 0.5mm] {\scriptsize {Non adjacent memory navigation}};
+
+  \end{scope}
+
+
+\end{tikzpicture}
+\end{center}
+\caption{Schematic representation of the searching process.}\label{Fig:basis}
+\end{figure}
+
+
+\subsection{Data structure}
+\label{sec:structure}
+
+In this section we deal with the data structure and how the preprocessing effort of the algorithm is performed. As we have seen previously, during the preprocessing of the algorithm, we are required to generate a data structure that allows a fast searching process. This data structure contains both the information of the elements that will be searched, and also some navigation metadata that allows a simple navigation through the database.
+
+Without losing generality, in this work we assume that we are dealing with a normalized space where all the coordinates of the database elements range in the interval $[0,\: 1]$. If spaces of other sizes are used, the methodology can be still applied without a problem by a normalization of the space or, alternatively, by an adjustment of the methodology to the size of the studied space.
+
+As mentioned in the previous section, the first step of the algorithm is to select a subset of dimensions in which a grid is defined. In that regard, and should the algorithm not being focused on speed, the size of the grid could have been left free, extending it to all the dimensions presented in the space. However, the proposed algorithm aims to be fast, and so, we have to impose a boundary in the number of dimensions in which the grid is defined. That way, the number of resultant hyper-dimensional cells that the computer has to study is significantly reduced, making the algorithm faster.
+
+In general, we are interested in defining grids whose cells have a mean number of elements bigger than one, since we aim to perform navigation through the cells defined by the grid. In here, it is interesting to note that for this mean value, we are only interested in cells that contain at least one element, since the algorithm is able to ignore cells that are completely empty, that is, the navigation is performed between cells that contain elements of the database. 
+
+Let $n$ be the number of elements contained in the searching space, which has dimension $d$. Moreover, if a uniform grid distribution is assumed with $n_c$ different cells in the length of each dimension, the resultant number of cells that can be defined in the whole searching space is equal to $n_c^d$. As it can be seen, the number of cells increases exponentially with the number of dimensions of the problem, and thus, if the number of dimensions is big enough, the number of cells can be much larger than the number of elements in the database. This causes the navigation through elements to become equivalent to the navigation through cells. Therefore, and in order to speed the process in those cases, we select a subset of dimensions such that:
+\begin{equation}
+d_s = \left\lfloor\log_{n_c}n\right\rfloor,
+\end{equation}
+where $\lfloor x \rfloor$ is the round down value of $x$, and $d_s$ is the number of dimensions selected from the available dimensions $d$. These selected dimensions can be chosen freely, and thus, if the problem is more sensitive to certain dimensions, those should be the dimension in which the grid is defined. 
+
+On the other hand, and based on this defined grid, it is possible to identify the cell i which each element of the database is located. Let $i$ be a given dimension from the subset $d_s$, and let $x_i$ be the normalized coordinate in that dimension of an element of the database. Then, the location of that element in the grid is obtained using the following expression:
+\begin{equation}
+s_i = \lfloor x_i n_c \rfloor, \quad \forall \: i\in\{1,\dots,d_s\},
+\end{equation}
+where $s_i$ represents the relative position of the cell in the grid using matrix notation. This means that each hyper-dimensional cell of the grid is assigned with a different value of $\mathbf{s} = (s_1, s_2, \dots, s_i, \dots, s_{d_s})$, which for the purpose of this work, is called score. Note that although each cell has a different score, two different elements of the database can present the same score, that is, they are contained in the same cell. This situation provokes that the score does not identify unequivocally elements of the database, which could seem a flaw of this definition. However, we will use this effect in our advantage.   
+
+As we have seen in the previous section, during the searching process the algorithm requires to perform a binary search and some navigation through the database. In order to do that, it is first required to have a database sorted in some way. Unfortunately, it is well known that, in general, and contrary to what happens in one dimensional spaces, there is not a clear order when dealing with multidimensional spaces. This means that a criteria has to be defined in order to sort the database. For the case of the proposed algorithm, a score based approach has been selected. 
+
+The idea behind this methodology is to use the cell based score defined previously in order to sort the database. In particular, the score of a cell element is considered to be bigger than other if the quantity:
+\begin{equation}
+s_t = \sum_{i = 1}^{d_s} \left(s_i\prod_{j = 1}^{i - 1}n_c\right), 
+\end{equation}
+is bigger. As it can be seen, components of the score with a larger index has more impact in this quantity. For this reason, the algorithm instead of performing the summation, it performs a series of comparisons between the components of the score of both elements with the same index, that is $s_i$ with $i\in \{1,\dots,d_s\}$, starting with the component that presents the largest index. That way, once one of the scores presents a component bigger than the other, it is possible to derive that such score is bigger.
+
+Following this criteria, it is possible to sort the whole database using an algorithm such as mergesort or quicksort. Note that elements with the same score do not have any priority between them and as such are sorted randomly.
+
+The next step in the preprocessing requires to define a representative for each cell that contains at least an element of the database. This representative is chosen in such a way that it is the first element in memory that presents a given score. This definition has two purposes. First, it allows to identify unequivocally each cell of interest with just one element of the database. Second, it allows to locate the location in memory where the elements of the database start to present a given score. The information of the cell representatives of each elements are stored as navigation metadata for the algorithm. Moreover, and in order to allow a fast navigation through elements that are adjacent in memory, the representatives of the previous and next cells in memory are also stored as part of the navigation data. Note that in this way the algorithm can navigate without problems in the first dimension of the problem through all the database.
+
+The final step in the preprocessing is to generate the navigation metadata that allows to relate elements that are not adjacent or close in memory, or in other words, this navigation metadata aims to ease the navigation in the dimensions $i\in\{2,\dots,d_s\}$. In this regard, it is important to note that during the searching process, the algorithm starts in the elements that have the lowest score in the searching range and continues with the retrieval of elements in ascending value of score. This means that we are only interested in the navigation data related to this direction of the score. This means that, for each database element, we define $(d_s-1)$ navigation components that are related with the different dimensions in the grid not covered before. To be more precise, we are interested in the location of the cell representatives that have a score $\mathbf{s'}$ in the form of:
+\begin{eqnarray} \label{eq:cellobjective}
+s'_i = s_i \quad \forall \: i \neq j; \nonumber \\
+s'_i = s_i + 1 \quad \text{if} \: i = j;
+\end{eqnarray}
+where $\mathbf{s}$ is the score of the studied element and $j \in \{2, \dots, d_s\}$ is a given dimension of the grid defined before. Note that there could be situations where the objective score $\mathbf{s'}$ is not present in the database. In those cases, the algorithm selects the cell representative that with the closest score to the objective and that is bigger than it. Another important thing to note is that this navigation is defined between cells, and thus, the computation of the navigation metadata has to be performed only for the different cells containing database elements in them, and then, assigning this information to all the elements in the studied cell.
+
+Once the previous computations are finished, the preprocessing of the algorithm is considered to be complete for a given database. At this point, each element of the database contains the following information:
+\begin{itemize}
+	\item Coordinates of the element: an array of size the number of dimensions that contains the coordinates of the elements in the searching space.
+	\item Cell score: an integer array of size the number of dimensions that identifies the grid cell in which the element is located.
+	\item Cell representative: an integer number that provides the location in the database of the cell representative of the element. 
+	\item Previous cell representative: an integer number that provides the location of the cell representative of the previous cell adjacent in memory.
+	\item Next cell representative: an integer number that provides the location of the cell representative of the next cell adjacent in memory.
+	\item Cell navigation: an array of integer numbers with size the number of selected dimensions minus one $(d_s - 1)$ that contains the locations of the cell representatives related to the scores given by Equation~\eqref{eq:cellobjective}.
+\end{itemize} 
+
+
+\subsection{Searching process}
+\label{sec:search}
+
+Having done the preprocessing effort, it is now possible to perform searches in the database using the proposed algorithm. The first step in the searching process is to transform the searching intervals into an equivalent search in cells. This is done using the grid defined in the preprocessing, taking into account that the algorithm has to assure that the search cells contain the whole searching range. In addition, and since we are dealing with orthogonal search, two opposite vertices of the searching range define the whole searching range. Let $[a_i, b_i] \quad \forall \: i\in\{1, \dots, d_s\}$ be the searching range in the dimensions selected during the preprocessing. Then, the search cells correspond to the subset $(c_1,c_2,\dots,c_i,\dots,c_{d_s})$, where $c_i$ are all the possible cell combinations in $c_i \in [\lfloor a_in_c \rfloor, \lfloor b_in_c \rfloor] \quad \forall \: i \in \{1,\dots,d_s\}$. This means that it is possible to identify the whole searching range with just the initial and final cells of the searching range, that is, $c_i = \lfloor a_in_c \rfloor$ and $c_i = \lfloor b_in_c \rfloor$ respectively. This process is performed in $\mathcal{O}(d_s)$.
+
+Once the search cells are identified, a binary search is performed in order to find an element in the database that has the same score that the initial cell of the searching range, that is, $s_i = \lfloor a_in_c \rfloor \quad \forall \: i\in\{1,\dots,d_s\}$. If such score does not exist in the database, the algorithm retrieves the closest element with a score bigger that the one sought. Note that since in the preprocessing the database was sorted based on the scores of the elements of the database, this is a simple searching process that requires $\mathcal{O}(\log n)$ operations in order to find the element sought. 
+
+From this first element, the algorithm now retrieves all the elements that are adjacent in memory and inside the search cells identified in the previous step. The process is done as follows: instead of checking if the adjacent elements lay inside the searching interval, the algorithm only assesses the adjacent cells using the metadata information. This means that the number of operations is reduced proportionally to the number of elements in each cell. Moreover, it is worth noticing that since the metadata allows to navigate between cells containing database elements, cells that are empty are completely ignored. This implies that in the worst case scenario, this process takes $\mathcal{O}(n_c)$ operations to locate the last element adjacent and inside the searching interval.
+
+After that, the algorithm focus on finding the next subset of adjacent elements. This is done by the use of a cell counter to set the objective cell, and the navigation metadata, which allows to first obtain an element located very close to the objective cell, and then to identify the representative of the objective cell. In particular, and from the metadata structure, the algorithm has information on how many elements lay between a given element of the database and the representative element of it closest cells in all directions. In particular, let $(s_1, s_2,\dots,s_i,\dots,s_{ds})$ be the score of the cell containing the studied element. From the navigation metadata, we know the location of the cell representatives whose scores are of the form:
+\begin{eqnarray}
+s'_i = s_i \quad \forall \: i \neq j; \nonumber \\
+s'_i = s_i + 1 \quad \text{if} \: i = j;
+\end{eqnarray}
+being $j \in \{1,\dots, d_s\}$ a given dimension of the space, or if those scores do not exist in the database, the closest ones with a bigger score.This means that the algorithm has a very good approximation on where the representatives of the next elements contained in the searching range are located. Then, by using the information of the next and previous cell representative, it is very simple to identify the element sought. 
+
+Once this first element of the subset is identified, the algorithm retrieves all the adjacent elements in memory that are inside the searching range, following the same process explained before.
+
+The process of searching for the next subset of adjacent elements in memory and then performing their retrieval is continued until all search cells are studied. This condition is equivalent to continue the process until the algorithm reaches the cell defined by the score $s_i = \lfloor b_in_c \rfloor \quad \forall \: i\in\{1,\dots,d_s\}$. After this process is performed, there will be in general elements retrieved that are outside the searching interval. This is caused by two factors. First of all, not all dimensions have been assessed yet since up to this point only $d_s$ dimensions are taken into account. Second, and due to the fact that, in general, the boundaries defined by the search cells do not present a perfect match with the searching range. For those reasons, a post-processing effort must be performed. This post-processing is based on a brute force approach where the algorithm first assess the boundaries in the remaining dimensions, and then, it checks the dimensions studied during the cell process.
+
+
+\section{Performance}
+\label{sec:performance}
+
+\section{Conclusions}
+\label{sec:conclusions}
+
+Note to myself: we need to make a comment on the memory required to store navigation metadata.
+
+\begin{thebibliography}{00}
+
+%% \bibitem[Author(year)]{label}
+%% Text of bibliographic item
+
+\bibitem{basic} \textsc{J. L. Bentley}, and \textsc{J. H. Friedman},
+\textit{Data structures for range searching}, ACM Computing Surveys (CSUR), Vol. 11, No. 4, 1979, pp. 397-409. doi: 10.1145/356789.356797.
+
+\bibitem{grid} \textsc{J. Nievergelt, H. Hinterberger}, and \textsc{K. C. Sevcik},
+\textit{The grid file: An adaptable, symmetric multikey file structure}, ACM Transactions on Database Systems (TODS), Vol. 9, No. 1, 1984, pp. 38-71. doi: 10.1145/348.318586.
+
+\bibitem{btree} \textsc{R. Bayer}, and \textsc{E. McCreight},
+\textit{Organization and maintenance of large ordered indexes}, in Software pioneers. Springer, Berlin, Heidelberg, 2002. pp. 245-262. doi: 10.1007/978-3-642-59412-0\_15.
+
+\bibitem{quadtree} \textsc{R. A. Finkel}, and \textsc{J. L. Bentley},
+\textit{Quad trees a data structure for retrieval on composite keys}, Acta informatica, Vol. 4, No. 1, 1974, pp. 1-9. doi: 10.1007/BF00288933.
+
+\bibitem{Bentley} \textsc{J. L. Bentley},
+\textit{Multidimensional binary search trees used for associative searching}, Communications of the ACM, Vol. 18, No. 9, 1975, pp. 509-517. doi: 10.1145/361002.361007.
+
+\bibitem{rtrees} \textsc{A. Guttman},
+\textit{R-trees: a dynamic index structure for spatial searching}, ACM, Vol. 14, No. 2, 1975, pp. 47-57. doi: 10.1145/971697.602266.
+
+\bibitem{kdbtree} \textsc{J. T. Robinson},
+\textit{The KDB-tree: a search structure for large multidimensional dynamic indexes}, in Proceedings of the 1981 ACM SIGMOD international conference on Management of data, AMC, 1981. pp. 10-18. doi: 10.1145/582318.582321.
+
+\bibitem{willard} \textsc{D. E. Willard},
+\textit{New data structures for orthogonal range queries}, SIAM Journal on Computing, Vol. 14, No 1, 1985, pp. 232-253. doi: 10.1137/0214019.
+
+\bibitem{lueker} \textsc{G. S. Lueker},
+\textit{A data structure for orthogonal range queries}, in 19th Annual Symposium on Foundations of Computer Science (sfcs 1978). IEEE, 1978. pp. 28-34. doi: 10.1109/SFCS.1978.1.
+
+\bibitem{alstrup} \textsc{S. Alstrup, G. S. Brodal}, and \textsc{T. Rauhe},
+\textit{New data structures for orthogonal range searching}, in Proceedings 41st Annual Symposium on Foundations of Computer Science, IEEE, pp. 198-207, 2000. doi: 10.1109/SFCS.2000.892088.
+
+\bibitem{arya} \textsc{S. Arya}, and \textsc{D. M. Mount},
+\textit{Approximate range searching}, Computational Geometry, Vol. 17, No. 3-4, 2000, pp. 135-152. doi: 10.1016/S0925-7721(00)00022-5.
+
+\bibitem{agarwal} \textsc{P. K. Agarwal}, and \textsc{J. Erickson},
+\textit{Geometric range searching and its relatives}, Contemporary Mathematics, Vol. 223, 1999, pp. 1-56.
+
+\bibitem{Chazelle} \textsc{B. Chazelle},
+\textit{Lower bounds for orthogonal range searching: I. the reporting case}, Journal of the ACM (JACM), Vol. 37, No. 2, 1990, pp. 200-212. doi: 10.1145/77600.77614.
+
+\bibitem{dimension} \textsc{F. Korn, B. U. Pagel}, and \textsc{C. Faloutsos},
+\textit{On the" dimensionality curse" and the" self-similarity blessing"}, IEEE Transactions on Knowledge and Data Engineering, Vol. 13, No. 1, 2001, pp. 96-111. doi: 10.1109/69.908983.
+
+\end{thebibliography}
+\end{document}
+
+\endinput
+%%
+%% End of file `elsarticle-template-num-names.tex'.
