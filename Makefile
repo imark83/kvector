@@ -6,9 +6,9 @@ DEBUG_COMMON_OBJECTS = obj/debug/main.o obj/debug/data.o
 ALL_OBJECTS = $(DEBUG_COMMON_OBJECTS) $(COMMON_OBJECTS)
 
 
-# LIBS = -lgmpxx -lgmp
-CFLAGS = -O3 -Wall
-DEBUGFLAGS = -O0 -g
+LIBS = -lopencv_imgcodecs -lopencv_core -lopencv_highgui -lopencv_imgproc
+CFLAGS = -O3 -Wall -I /usr/local/include/opencv4 
+DEBUGFLAGS = -O0 -g -I /usr/local/include/opencv4 
 
 database: $(COMMON_OBJECTS)
 	$(CC) -o $@ $(COMMON_OBJECTS) $(LIBS)

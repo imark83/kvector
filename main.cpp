@@ -5,20 +5,9 @@
 #include "database.hpp"
 #include "misc.hpp"
 
-// #include <gmpxx.h>
-// void printRange(std::vector<Data> &vec, size_t N,
-//           size_t first_score, size_t last_score) {
-//   size_t position = getPositionOfTag(vector, N, first_score);
-//   if(position == N) return;
-//   if(vector[position].score > last_score) return;
-//   do {
-//     printf("(%f,%f)\n", vector[position].x[0], vector[position].x[1]);
-//     ++position;
-//   } while(vector[position].score <= last_score);
-//
-//   return;
-// }
+#include <opencv2/opencv.hpp>
 
+using namespace cv;
 
 int64_t movidas = 0;
 
@@ -43,18 +32,29 @@ int main(int argc, char const *argv[]) {
   clock_t c0, c1;
 
 
-  int64_t ndim = 10;
-  int64_t nBox = 100;
-  int64_t dataBaseSize = 10000000;
-  int64_t subdim = 3;
 
   std::cout.precision(2);
+
+  Mat image;
+  image = imread("tulips01.jpg", IMREAD_COLOR);
+
+  //imshow("prueba", image);
+  //int key = waitKey(0);
+
+
+
+  int64_t ndim = 3;
+  int64_t nBox = 100;
+  int64_t dataBaseSize = image.rows*image.cols;
+  int64_t subdim = 3;
+
+
 
   Database<double> database(dataBaseSize, ndim, nBox, subdim);
 
   for(int64_t i=0; i<database.size(); ++i) {
     for(int64_t j=0; j<ndim; ++j)
-      database[i].x[j] = ((double) rand()) / RAND_MAX;
+      database[i].x[j] = (image.data[3*i+j])/255.0;
     database[i].score = getScore(database[i], nBox);
   }
 
