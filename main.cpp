@@ -11,8 +11,8 @@ using namespace cv;
 
 int64_t movidas = 0;
 
-double minval = 0.2;
-double maxval = 0.7;
+double minval = 0.05;
+double maxval = 0.10;
 
 
 std::ostream & operator<<(std::ostream &output,
@@ -110,8 +110,8 @@ int main(int argc, char const *argv[]) {
   Score_t box1(subdim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
   for(int i=0; i<subdim; ++i) {
-    box0[i] = 20;
-    box1[i] = 70;
+    box0[i] = 05;
+    box1[i] = 10;
   }
 
   c0 = clock();
