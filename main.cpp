@@ -58,6 +58,7 @@ int main(int argc, char const *argv[]) {
     database[i].score = getScore(database[i], nBox);
   }
 
+  std::cout << "database size = " << dataBaseSize << std::endl;
   std::cout << "start preprocessing..." << std::endl;
   mergesort(database);
   database.setScores();
