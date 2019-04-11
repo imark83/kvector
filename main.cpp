@@ -5,6 +5,8 @@
 #include "database.hpp"
 #include "misc.hpp"
 
+#include "kdtree/kdtree.h"
+
 #include <opencv2/opencv.hpp>
 
 using namespace cv;
@@ -36,6 +38,7 @@ int main(int argc, char const *argv[]) {
   std::cout.precision(2);
 
   Mat image;
+  // image = imread("caca.jpg", IMREAD_COLOR);
   image = imread("tulips01.jpg", IMREAD_COLOR);
 
   //imshow("prueba", image);
@@ -140,7 +143,46 @@ int main(int argc, char const *argv[]) {
   std::cout << std::scientific;
   std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
-std::cout << "movidas = " << movidas << std::endl;
+  std::cout << "movidas = " << movidas << std::endl;
+
+
+
+
+  v.clear();
+
+
+
+  double *pos = (double *) malloc(ndim*sizeof(double));
+  int *data = (int *) malloc(database.size()*sizeof(int));
+
+  kdtree *ptree;
+
+  // Create the k-d tree
+  ptree = kd_create(ndim);
+
+  // Add points to the k-d tree
+  for(int i=0; i<database.size(); ++i) {
+    for(int j=0; j<ndim; ++j) {
+         pos[j] = database[i].x[j];
+    }
+    data[i] = i;
+    assert(0 == kd_insert(ptree, pos, &data[i]));
+  }
+
+  c0 = clock();
+
+  int ramitas = FullOrthRangeSearch(ptree,minval,maxval,ndim);
+
+
+  c1 = clock();
+
+  // std::cout << v << std::endl;
+
+
+  std::cout << "rop = " << ramitas << std::endl;
+  std::cout << std::scientific;
+  std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
+
 
 
   return 0;
