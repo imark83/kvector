@@ -11,8 +11,8 @@ using namespace cv;
 
 int64_t movidas = 0;
 
-double minval = 0.05;
-double maxval = 0.10;
+double minval[3] = {0.0, 0.0, 0.0};
+double maxval[3] = {0.95, 0.2, 0.2};
 
 
 std::ostream & operator<<(std::ostream &output,
@@ -36,7 +36,7 @@ int main(int argc, char const *argv[]) {
   std::cout.precision(2);
 
   Mat image;
-  image = imread("tulips01.jpg", IMREAD_COLOR);
+  image = imread("caca.jpg", IMREAD_COLOR);
 
   //imshow("prueba", image);
   //int key = waitKey(0);
@@ -80,11 +80,11 @@ int main(int argc, char const *argv[]) {
   for(int64_t i=0; i<database.size(); ++i) {
     bool valid = true;
     for(int64_t j=0; j<ndim; ++j) {
-      if(database[i][j] >= maxval) {
+      if(database[i][j] >= maxval[j]) {
         valid = false;
         break;
       }
-      if(database[i][j] < minval) {
+      if(database[i][j] < minval[j]) {
         valid = false;
         break;
       }
@@ -111,8 +111,8 @@ int main(int argc, char const *argv[]) {
   Score_t box1(subdim);
   // INITIALIZE BOX SEARCH box0 <= val < box1
   for(int i=0; i<subdim; ++i) {
-    box0[i] = 05;
-    box1[i] = 10;
+    box0[i] = floor(minval[i]*nBox);
+    box1[i] = ceil(maxval[i]*nBox);
   }
 
   c0 = clock();
@@ -120,11 +120,11 @@ int main(int argc, char const *argv[]) {
   for(int64_t i=0; i<(int64_t) temp.size(); ++i) {
     bool valid = true;
     for(int64_t j=ndim-1; j>=0; --j) {
-      if(database[temp[i]][j] >= maxval) {
+      if(database[temp[i]][j] >= maxval[j]) {
         valid = false;
         break;
       }
-      if(database[temp[i]][j] < minval) {
+      if(database[temp[i]][j] < minval[j]) {
         valid = false;
         break;
       }
