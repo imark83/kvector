@@ -36,7 +36,7 @@ int main(int argc, char const *argv[]) {
   std::cout.precision(2);
 
   Mat image;
-  image = imread("caca.jpg", IMREAD_COLOR);
+  image = imread("tulips01.jpg", IMREAD_COLOR);
 
   //imshow("prueba", image);
   //int key = waitKey(0);
