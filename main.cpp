@@ -12,7 +12,7 @@ using namespace cv;
 int64_t movidas = 0;
 
 double minval[3] = {0.0, 0.0, 0.0};
-double maxval[3] = {0.95, 0.2, 0.2};
+double maxval[3] = {0.4, 0.4, 0.96};
 
 
 std::ostream & operator<<(std::ostream &output,
