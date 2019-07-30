@@ -145,7 +145,7 @@ In order to make the methodology clearer, a summary of the steps followed by the
   \tikzset{pto/.style={circle, draw, fill, inner sep = 0, outer sep = 0, minimum size=0.6mm}}
   \foreach \k in {0,1} {
     \begin{scope}[shift={(1.2*\k, 0)}]
-      \fill[gray!15!white] (0.3333,0) rectangle +(0.66666,0.66666);
+      \fill[black!15!white] (0.3333,0) rectangle +(0.66666,0.66666);
     \end{scope}
   }
   \foreach \k in {0,1,2} {
@@ -161,17 +161,17 @@ In order to make the methodology clearer, a summary of the steps followed by the
   \draw[-to, dashed] (P1) edge (P0) (P0) edge (P2);
   \draw[-to, dashed] (P23) edge (P24) (P24) edge (P25);
   \draw[-to, dashed] (P18) edge (P20) (P20) edge (P21);
-  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P3) -- ++(-0.1,0) |- (P1);
+  \draw[thick, black!15!white,rounded corners = 5pt, -to] (P3) -- ++(-0.1,0) |- (P1);
   \draw[rounded corners = 5pt, -to] (P3) -- ++(-0.1,0) |- (P1);
-  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P1) -- ++(0,-0.4) -| (P23);
+  \draw[thick, black!15!white,rounded corners = 5pt, -to] (P1) -- ++(0,-0.4) -| (P23);
   \draw[rounded corners = 5pt, -to] (P1) -- ++(0,-0.4) -| (P23);
-  \draw[thick, gray!15!white,rounded corners = 5pt, -to] (P23) -- ++(-0.1,0) |- (P18);
+  \draw[thick, black!15!white,rounded corners = 5pt, -to] (P23) -- ++(-0.1,0) |- (P18);
   \draw[rounded corners = 5pt, -to] (P23) -- ++(-0.1,0) |- (P18);
 
   \node[draw,star,star points=5,star point ratio=1.8, minimum width = 3mm,inner sep = 0] at (P3) {};
 
   \begin{scope}[shift={(3.5,0.8)}]
-    \node[right,draw,fill=gray!15!white,minimum width = 4mm] (D) {};
+    \node[right,draw,fill=black!15!white,minimum width = 4mm] (D) {};
       \node[right] at (D.east) {\scriptsize Cell searching range};
     \node[right, draw,star,star points=5,star point ratio=1.8, minimum width = 3mm,inner sep = 0] at (0.015,-5mm) (A) {};
       \node[right] at (A.east)  {\scriptsize First Output Point};
