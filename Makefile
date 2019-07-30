@@ -15,9 +15,6 @@ database: $(COMMON_OBJECTS) obj/kdtree.o
 debug: clean $(DEBUG_COMMON_OBJECTS)
 	$(CC) -o $@ $(DEBUG_COMMON_OBJECTS) $(LIBS)
 
-obj/kdtree.o: kdtree/kdtree.c
-	gcc -c kdtree/kdtree.c -o kdtree/kdtree.o -O3 -Wall
-
 obj/debug/%.o: %.cpp
 	$(CC) -c -o $@ $< $(DEBUGFLAGS)
 

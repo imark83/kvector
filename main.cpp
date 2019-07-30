@@ -5,7 +5,6 @@
 #include "database.hpp"
 #include "misc.hpp"
 
-#include "kdtree/kdtree.h"
 
 #include <opencv2/opencv.hpp>
 
@@ -13,8 +12,8 @@ using namespace cv;
 
 int64_t movidas = 0;
 
-double minval[3] = {0.0, 0.0, 0.0};
-double maxval[3] = {0.4, 0.4, 0.96};
+double minval[9] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+double maxval[9] = {0.4, 0.4, 0.96, 0.4, 0.4, 0.96, 0.4, 0.4, 0.96};
 
 
 std::ostream & operator<<(std::ostream &output,
@@ -47,18 +46,26 @@ int main(int argc, char const *argv[]) {
 
 
 
-  int64_t ndim = 9;
+  int64_t ndim = 3;
   int64_t nBox = 100;
   int64_t dataBaseSize = image0.rows*image0.cols;
-  int64_t subdim = 3;
+  int64_t subdim = 
+      (int64_t) floor(log(dataBaseSize)/log(nBox))-1;
 
+  std::cout << "subdim = " << subdim << std::endl;
 
 
   Database<double> database(dataBaseSize, ndim, nBox, subdim);
 
   for(int64_t i=0; i<database.size(); ++i) {
-    for(int64_t j=0; j<ndim; ++j)
-      database[i].x[j] = (image.data[3*i+j])/255.0;
+    for(int64_t j=0; j<ndim; ++j) {
+      if(j<3) 
+        database[i].x[j] = (image0.data[3*i+j])/255.0;
+      else if (j<6)
+        database[i].x[j] = (image1.data[3*i+j-3])/255.0;
+      else if (j<9)
+        database[i].x[j] = (image2.data[3*i+j-6])/255.0;
+    }
     database[i].score = getScore(database[i], nBox);
   }
 
@@ -150,39 +157,6 @@ int main(int argc, char const *argv[]) {
 
 
   v.clear();
-
-
-
-  double *pos = (double *) malloc(ndim*sizeof(double));
-  int *data = (int *) malloc(database.size()*sizeof(int));
-
-  kdtree *ptree;
-
-  // Create the k-d tree
-  ptree = kd_create(ndim);
-
-  // Add points to the k-d tree
-  for(int i=0; i<database.size(); ++i) {
-    for(int j=0; j<ndim; ++j) {
-         pos[j] = database[i].x[j];
-    }
-    data[i] = i;
-    assert(0 == kd_insert(ptree, pos, &data[i]));
-  }
-
-  c0 = clock();
-
-  int ramitas = FullOrthRangeSearch(ptree,minval,maxval,ndim);
-
-
-  c1 = clock();
-
-  // std::cout << v << std::endl;
-
-
-  std::cout << "rop = " << ramitas << std::endl;
-  std::cout << std::scientific;
-  std::cout << "\t" << (((float) (c1-c0))/CLOCKS_PER_SEC) << std::endl;
 
 
 
