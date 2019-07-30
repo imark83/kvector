@@ -12,8 +12,10 @@ using namespace cv;
 
 int64_t movidas = 0;
 
-double minval[9] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-double maxval[9] = {0.4, 0.4, 0.96, 0.4, 0.4, 0.96, 0.4, 0.4, 0.96};
+double scale = 0.05+pow(0.00001,1.0/3.0);
+
+double minval[9] = {0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05};
+double maxval[9] = {scale, scale, scale, scale, scale, scale, scale, scale, scale};
 
 
 std::ostream & operator<<(std::ostream &output,
@@ -28,6 +30,8 @@ std::ostream & operator<<(std::ostream &output,
 
 
 int main(int argc, char const *argv[]) {
+
+  std::cout << "scale = " << scale << std::endl;
 
   // MEASURE TIME
   clock_t c0, c1;
@@ -50,7 +54,7 @@ int main(int argc, char const *argv[]) {
   int64_t nBox = 100;
   int64_t dataBaseSize = image0.rows*image0.cols;
   int64_t subdim = 
-      (int64_t) floor(log(dataBaseSize)/log(nBox))-1;
+      (int64_t) floor(log(dataBaseSize)/log(nBox));
 
   std::cout << "subdim = " << subdim << std::endl;
 
@@ -74,6 +78,7 @@ int main(int argc, char const *argv[]) {
   mergesort(database);
   database.setScores();
   computeElementsPerDimension(database);
+
 
 
 
