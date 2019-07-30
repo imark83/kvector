@@ -33,7 +33,7 @@ std::ostream & operator<<(std::ostream &output,
 int main(int argc, char const *argv[]) {
 
   std::ofstream fout;
-  fout.open("tulips.txt");
+  fout.open("uniform.txt");
 
   std::cout << "scale = " << scale << std::endl;
 
@@ -46,11 +46,6 @@ int main(int argc, char const *argv[]) {
 
   std::cout.precision(2);
 
-  Mat image0, image1, image2;
-  image0 = imread("t00.jpg", IMREAD_COLOR);
-  image1 = imread("t01.jpg", IMREAD_COLOR);
-  image2 = imread("t02.jpg", IMREAD_COLOR);
-
   //imshow("prueba", image);
   //int key = waitKey(0);
 
@@ -59,7 +54,7 @@ int main(int argc, char const *argv[]) {
 
     int64_t ndim = k;
     int64_t nBox = 100;
-    int64_t dataBaseSize = image0.rows*image0.cols;
+    int64_t dataBaseSize = 1e7;
     int64_t subdim = 
         (int64_t) floor(log(dataBaseSize)/log(nBox));
 
@@ -69,17 +64,13 @@ int main(int argc, char const *argv[]) {
 
     Database<double> database(dataBaseSize, ndim, nBox, subdim);
 
+
     for(int64_t i=0; i<database.size(); ++i) {
-      for(int64_t j=0; j<ndim; ++j) {
-        if(j<3) 
-          database[i].x[j] = (image0.data[3*i+j])/255.0;
-        else if (j<6)
-          database[i].x[j] = (image1.data[3*i+j-3])/255.0;
-        else if (j<9)
-          database[i].x[j] = (image2.data[3*i+j-6])/255.0;
-      }
+      for(int64_t j=0; j<ndim; ++j)
+        database[i].x[j] = ((double) rand()) / RAND_MAX;
       database[i].score = getScore(database[i], nBox);
     }
+
 
     std::cout << "database size = " << dataBaseSize << std::endl;
     std::cout << "start preprocessing..." << std::endl;
