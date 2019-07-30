@@ -37,18 +37,19 @@ int main(int argc, char const *argv[]) {
 
   std::cout.precision(2);
 
-  Mat image;
-  // image = imread("caca.jpg", IMREAD_COLOR);
-  image = imread("tulips01.jpg", IMREAD_COLOR);
+  Mat image0, image1, image2;
+  image0 = imread("t00.jpg", IMREAD_COLOR);
+  image1 = imread("t01.jpg", IMREAD_COLOR);
+  image2 = imread("t02.jpg", IMREAD_COLOR);
 
   //imshow("prueba", image);
   //int key = waitKey(0);
 
 
 
-  int64_t ndim = 3;
+  int64_t ndim = 9;
   int64_t nBox = 100;
-  int64_t dataBaseSize = image.rows*image.cols;
+  int64_t dataBaseSize = image0.rows*image0.cols;
   int64_t subdim = 3;
 
 
