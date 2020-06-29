@@ -18,4 +18,5 @@ plt.ylim((1e-4,10))
 plt.xlabel("Proportion of retreived elements")
 plt.ylabel("Relative Speed")
 
-plt.show()
+plt.savefig("fig02.pdf")
+# plt.show()

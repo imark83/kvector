@@ -12,4 +12,5 @@ plt.legend(("Uniform Database","Non Uniform Database"))
 plt.xlabel("Number of dimensions")
 plt.ylabel("Relative Speed")
 
-plt.show()
+plt.savefig("fig01.pdf")
+# plt.show()
